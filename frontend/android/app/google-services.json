@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "410898875585",
+    "project_id": "packagepal-io",
+    "storage_bucket": "packagepal-io.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:410898875585:android:e46fbba750ddd143d98040",
+        "android_client_info": {
+          "package_name": "com.example.frontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARCXIrweZnnfQVPlI1UeB388Tb9aZCqVE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
