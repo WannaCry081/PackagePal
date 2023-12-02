@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:frontend/widgets/CustomButton.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:flutter_svg/flutter_svg.dart";
 
@@ -75,40 +76,27 @@ class OnboardingView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  GestureDetector(
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                        child: Container(
-                            height: 55,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: const [
-                                  BoxShadow(
-                                      blurRadius: 2,
-                                      color: Color.fromARGB(150, 0, 0, 0)),
-                                ],
-                                color: Colors.white,
-                                border:
-                                    Border.all(color: Colors.grey.shade100)),
-                            child: Center(
-                                child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                  SvgPicture.asset("assets/svg/GoogleIcon.svg",
-                                      width: 16, height: 16),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    "Continue with Google",
-                                    style: GoogleFonts.lato(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600),
-                                  )
-                                ]))),
-                      )),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    child: CustomButton(
+                        btnShadow: true,
+                        btnOnTap: () {},
+                        btnChild: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset("assets/svg/GoogleIcon.svg",
+                                  width: 16, height: 16),
+                              const SizedBox(width: 10),
+                              Text(
+                                "Continue with Google",
+                                style: GoogleFonts.lato(
+                                    fontSize: 16, fontWeight: FontWeight.w600),
+                              )
+                            ])),
+                  ),
+                  const SizedBox(height: 5),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
