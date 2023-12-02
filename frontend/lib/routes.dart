@@ -7,7 +7,7 @@ import "package:frontend/views/Register/index.dart";
 
 Map<String, Widget Function(BuildContext)> routes = {
   "/" : (context) {
-    return const OnboardingView();
+    return OnboardingView();
   },
 
   "/aut/login" : (context) {
