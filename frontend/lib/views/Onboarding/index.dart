@@ -103,7 +103,7 @@ class OnboardingView extends StatelessWidget {
                       Text("Already have an account? ",
                           style: GoogleFonts.lato(fontSize: 14)),
                       GestureDetector(
-                          onTap: () {},
+                          onTap: () => navigateToLogin(context),
                           child: Text("Log in",
                               style: GoogleFonts.lato(
                                   fontSize: 14,
@@ -115,5 +115,10 @@ class OnboardingView extends StatelessWidget {
                 ]))
       ],
     ));
+  }
+
+  void navigateToLogin(BuildContext context){
+    Navigator.of(context).pushNamed("/auth/login");
+    return;
   }
 }
