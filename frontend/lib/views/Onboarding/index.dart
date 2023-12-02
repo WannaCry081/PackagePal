@@ -112,11 +112,11 @@ class OnboardingView extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Don't have an account? ",
+                      Text("Already have an account? ",
                           style: GoogleFonts.lato(fontSize: 14)),
                       GestureDetector(
                           onTap: () {},
-                          child: Text("Sign up",
+                          child: Text("Log in",
                               style: GoogleFonts.lato(
                                   fontSize: 14,
                                   color: Theme.of(context).colorScheme.primary,
