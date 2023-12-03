@@ -1,8 +1,17 @@
 import "package:flutter/material.dart";
+import "package:frontend/widgets/CustomButton.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:flutter_svg/flutter_svg.dart";
 
-class OnboardingView extends StatelessWidget {
+class OnboardingView extends StatefulWidget {
+  const OnboardingView({Key? key}) : super(key: key);
+
+  @override
+  State<OnboardingView> createState() => _OnboardingViewState();
+}
+
+class _OnboardingViewState extends State<OnboardingView> {
+  int currentIndex = 0;
   final informations = [
     {
       "image": "assets/images/Onboarding_1.jpg",
@@ -24,8 +33,6 @@ class OnboardingView extends StatelessWidget {
     },
   ];
 
-  OnboardingView({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,6 +40,7 @@ class OnboardingView extends StatelessWidget {
       children: [
         Expanded(
           child: PageView.builder(
+            onPageChanged: _onPageChanged,
             allowImplicitScrolling: true,
             itemCount: informations.length,
             itemBuilder: (context, index) {
@@ -50,7 +58,7 @@ class OnboardingView extends StatelessWidget {
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 15),
                             Text(informations[index]["title"].toString(),
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.poppins(
@@ -69,63 +77,91 @@ class OnboardingView extends StatelessWidget {
           ),
         ),
         SizedBox(
-            height: 140,
+            height: 160,
             width: MediaQuery.of(context).size.width,
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  GestureDetector(
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                        child: Container(
-                            height: 55,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: const [
-                                  BoxShadow(
-                                      blurRadius: 2,
-                                      color: Color.fromARGB(150, 0, 0, 0)),
-                                ],
-                                color: Colors.white,
-                                border:
-                                    Border.all(color: Colors.grey.shade100)),
-                            child: Center(
-                                child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                  SvgPicture.asset("assets/svg/GoogleIcon.svg",
-                                      width: 16, height: 16),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    "Continue with Google",
-                                    style: GoogleFonts.lato(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600),
-                                  )
-                                ]))),
-                      )),
+                  Center(
+                    child: SizedBox(
+                      height: 20,
+                      width: 50,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 3,
+                        itemBuilder: (context, index) {
+                          return Center(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 2),
+                              child: Container(
+                                width: 12,
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: (index == currentIndex)
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Colors.grey.shade200,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    child: CustomButton(
+                        btnColor: Colors.grey.shade100,
+                        btnShadow: true,
+                        btnOnTap: () {},
+                        btnChild: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset("assets/svg/GoogleIcon.svg",
+                                  width: 16, height: 16),
+                              const SizedBox(width: 10),
+                              Text(
+                                "Continue with Google",
+                                style: GoogleFonts.lato(
+                                    fontSize: 16, fontWeight: FontWeight.w600),
+                              )
+                            ])),
+                  ),
+                  const SizedBox(height: 5),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Don't have an account? ",
+                      Text("Already have an account? ",
                           style: GoogleFonts.lato(fontSize: 14)),
                       GestureDetector(
-                          onTap: () {},
-                          child: Text("Sign up",
+                          onTap: () => navigateToLogin(context),
+                          child: Text("Log in",
                               style: GoogleFonts.lato(
                                   fontSize: 14,
                                   color: Theme.of(context).colorScheme.primary,
-                                  fontWeight: FontWeight.w600)))
+                                  fontWeight: FontWeight.bold)))
                     ],
                   ),
                   const SizedBox(height: 20)
-                ]))
+                ])),
       ],
     ));
+  }
+
+  void navigateToLogin(BuildContext context) {
+    Navigator.of(context).pushNamed("/auth/login");
+    return;
+  }
+
+  void _onPageChanged(int value) {
+    setState(() {
+      currentIndex = value;
+    });
   }
 }

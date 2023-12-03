@@ -10,7 +10,7 @@ Map<String, Widget Function(BuildContext)> routes = {
     return OnboardingView();
   },
 
-  "/aut/login" : (context) {
+  "/auth/login" : (context) {
     return const LoginView();
   },
 
@@ -18,7 +18,7 @@ Map<String, Widget Function(BuildContext)> routes = {
     return const RegisterView();
   },
 
-  "auth/forgot-password" : (context) {
+  "/auth/forgot-password" : (context) {
     return const ForgotPasswordView();
   },
 
