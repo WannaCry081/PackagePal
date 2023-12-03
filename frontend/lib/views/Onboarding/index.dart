@@ -80,6 +80,7 @@ class OnboardingView extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 10),
                     child: CustomButton(
+                        btnColor: Colors.grey.shade100,
                         btnShadow: true,
                         btnOnTap: () {},
                         btnChild: Row(
@@ -108,16 +109,16 @@ class OnboardingView extends StatelessWidget {
                               style: GoogleFonts.lato(
                                   fontSize: 14,
                                   color: Theme.of(context).colorScheme.primary,
-                                  fontWeight: FontWeight.w600)))
+                                  fontWeight: FontWeight.bold)))
                     ],
                   ),
                   const SizedBox(height: 20)
-                ]))
+                ])),
       ],
     ));
   }
 
-  void navigateToLogin(BuildContext context){
+  void navigateToLogin(BuildContext context) {
     Navigator.of(context).pushNamed("/auth/login");
     return;
   }
