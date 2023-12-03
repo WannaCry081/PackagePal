@@ -22,13 +22,19 @@ class CustomButton extends StatelessWidget {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: (btnShadow)
-                    ? const [
+                    ? [
                         BoxShadow(
-                            blurRadius: 4, color: Color.fromARGB(100, 0, 0, 0)),
+                          color: Colors.black
+                              .withOpacity(0.2), // Adjust the opacity as needed
+                          spreadRadius: 0,
+                          blurRadius: 4,
+                          offset:
+                              const Offset(0, 2), // changes position of shadow
+                        ),
                       ]
                     : null,
                 color: btnColor,
-                border: Border.all(color: Colors.grey.shade100)),
+                border: Border.all(color: Colors.grey.shade200)),
             child: Center(child: btnChild)));
   }
 }
