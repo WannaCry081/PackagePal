@@ -32,7 +32,7 @@ class RegisterViewState extends State<RegisterView> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 GestureDetector(
-                  onTap: () => navigateToOnboarding(context),
+                  onTap: () => navigateBack(context),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
@@ -45,7 +45,7 @@ class RegisterViewState extends State<RegisterView> {
             )),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Text("Hello,\nWelcome to PackagePal!",
+          child: Text("Hey, Pal! 👋🏻\nGet started with us!",
               style:
                   GoogleFonts.lato(fontSize: 30, fontWeight: FontWeight.w900)),
         ),
@@ -108,7 +108,7 @@ class RegisterViewState extends State<RegisterView> {
     )));
   }
 
-  void navigateToOnboarding(BuildContext context) {
+  void navigateBack(BuildContext context) {
     Navigator.of(context).pop();
     return;
   }

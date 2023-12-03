@@ -31,7 +31,7 @@ class _LoginViewState extends State<LoginView> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 GestureDetector(
-                  onTap: () => navigateToOnboarding(context),
+                  onTap: () => navigateBack(context),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
@@ -68,11 +68,14 @@ class _LoginViewState extends State<LoginView> {
                         horizontal: 20, vertical: 10),
                     child: Align(
                       alignment: Alignment.centerRight,
-                      child: Text("Forgot Password?",
-                          style: GoogleFonts.lato(
-                              fontSize: 14,
-                              color: Theme.of(context).colorScheme.secondary,
-                              fontWeight: FontWeight.bold)),
+                      child: GestureDetector(
+                        onTap: () => navigateToForgotPassword(context),
+                        child: Text("Forgot Password?",
+                            style: GoogleFonts.lato(
+                                fontSize: 14,
+                                color: Theme.of(context).colorScheme.secondary,
+                                fontWeight: FontWeight.bold)),
+                      ),
                     )),
                 const SizedBox(height: 20),
                 Padding(
@@ -123,7 +126,7 @@ class _LoginViewState extends State<LoginView> {
                             Text(
                               "Continue with Google",
                               style: GoogleFonts.lato(
-                                  fontSize: 14, fontWeight: FontWeight.w600),
+                                  fontSize: 16, fontWeight: FontWeight.w600),
                             )
                           ])),
                 ),
@@ -148,13 +151,18 @@ class _LoginViewState extends State<LoginView> {
     )));
   }
 
-  void navigateToOnboarding(BuildContext context) {
+  void navigateBack(BuildContext context) {
     Navigator.of(context).pop();
     return;
   }
 
-  void navigateToRegister(BuildContext context){
+  void navigateToRegister(BuildContext context) {
     Navigator.of(context).pushReplacementNamed("/auth/register");
+    return;
+  }
+
+  void navigateToForgotPassword(BuildContext context) {
+    Navigator.of(context).pushNamed("/auth/forgot-password");
     return;
   }
 }
