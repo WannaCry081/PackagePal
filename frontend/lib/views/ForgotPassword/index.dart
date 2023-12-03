@@ -29,7 +29,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 GestureDetector(
-                  onTap: () => navigateToLogin(context),
+                  onTap: () => navigateBack(context),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
@@ -42,9 +42,19 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
             )),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Text("Welcome back!\nGlad to see you again!",
-              style:
-                  GoogleFonts.lato(fontSize: 30, fontWeight: FontWeight.w900)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Forgot Password?",
+                  style: GoogleFonts.lato(
+                      fontSize: 30, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 10),
+              Text(
+                  "Don't worry! It occurs. Please enter the\nEmail address linked with your account.",
+                  style: GoogleFonts.poppins(
+                      fontSize: 16, color: Colors.grey.shade800))
+            ],
+          ),
         ),
         const SizedBox(height: 20),
         Form(
@@ -62,19 +72,34 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                     child: CustomButton(
                       btnColor: Theme.of(context).colorScheme.primary,
                       btnOnTap: () {},
-                      btnChild: Text("Login",
+                      btnChild: Text("Submit",
                           style: GoogleFonts.lato(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: Theme.of(context).colorScheme.background)),
                     )),
               ],
-            ))
+            )),
+        SizedBox(height: MediaQuery.of(context).size.height - 460),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Remembered your Password? ",
+                style: GoogleFonts.lato(fontSize: 14)),
+            GestureDetector(
+                onTap: () => navigateBack(context),
+                child: Text("Sign in",
+                    style: GoogleFonts.lato(
+                        fontSize: 14,
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.bold)))
+          ],
+        ),
       ],
     )));
   }
 
-  void navigateToLogin(BuildContext context) {
+  void navigateBack(BuildContext context) {
     Navigator.of(context).pop();
     return;
   }
