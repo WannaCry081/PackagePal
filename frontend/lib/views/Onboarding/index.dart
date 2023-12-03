@@ -3,7 +3,15 @@ import "package:frontend/widgets/CustomButton.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:flutter_svg/flutter_svg.dart";
 
-class OnboardingView extends StatelessWidget {
+class OnboardingView extends StatefulWidget {
+  const OnboardingView({Key? key}) : super(key: key);
+
+  @override
+  State<OnboardingView> createState() => _OnboardingViewState();
+}
+
+class _OnboardingViewState extends State<OnboardingView> {
+  int currentIndex = 0;
   final informations = [
     {
       "image": "assets/images/Onboarding_1.jpg",
@@ -25,8 +33,6 @@ class OnboardingView extends StatelessWidget {
     },
   ];
 
-  OnboardingView({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +40,7 @@ class OnboardingView extends StatelessWidget {
       children: [
         Expanded(
           child: PageView.builder(
+            onPageChanged: _onPageChanged,
             allowImplicitScrolling: true,
             itemCount: informations.length,
             itemBuilder: (context, index) {
@@ -51,7 +58,7 @@ class OnboardingView extends StatelessWidget {
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 15),
                             Text(informations[index]["title"].toString(),
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.poppins(
@@ -70,12 +77,41 @@ class OnboardingView extends StatelessWidget {
           ),
         ),
         SizedBox(
-            height: 140,
+            height: 160,
             width: MediaQuery.of(context).size.width,
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  Center(
+                    child: SizedBox(
+                      height: 20,
+                      width: 50,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 3,
+                        itemBuilder: (context, index) {
+                          return Center(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 2),
+                              child: Container(
+                                width: 12,
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: (index == currentIndex)
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Colors.grey.shade200,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 10),
@@ -121,5 +157,11 @@ class OnboardingView extends StatelessWidget {
   void navigateToLogin(BuildContext context) {
     Navigator.of(context).pushNamed("/auth/login");
     return;
+  }
+
+  void _onPageChanged(int value) {
+    setState(() {
+      currentIndex = value;
+    });
   }
 }
