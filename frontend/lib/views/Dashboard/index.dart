@@ -20,8 +20,8 @@ class Dashboard extends StatelessWidget {
         context,
         controller: _controller,
         navBarStyle: NavBarStyle.style12,
+        navBarHeight: 70,
         confineInSafeArea: true,
-        navBarHeight: 55.0,
         screens: const [
           HomeView(),
           OrdersListView(),
@@ -32,42 +32,48 @@ class Dashboard extends StatelessWidget {
         items: [
           PersistentBottomNavBarItem(
             icon: const Icon(FeatherIcons.home),
-            iconSize: 20.0,
+            iconSize: 24.0,
             contentPadding: 3.0,
             title: "Home",
-            activeColorPrimary: Theme.of(context).colorScheme.tertiaryContainer,
+            activeColorPrimary: Theme.of(context).colorScheme.primary,
             inactiveColorPrimary: Colors.grey
           ),
           PersistentBottomNavBarItem(
             icon: const Icon(FeatherIcons.fileText),
-            iconSize: 20.0,
+            iconSize: 24.0,
             contentPadding: 3.0,
             title: "Orders",
-            activeColorPrimary: Theme.of(context).colorScheme.tertiaryContainer,
+            activeColorPrimary: Theme.of(context).colorScheme.primary,
             inactiveColorPrimary: Colors.grey
           ),
           PersistentBottomNavBarItem(
-            icon: const Icon(FeatherIcons.plus),
-            iconSize: 20.0,
+            icon: Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Theme.of(context).colorScheme.primary
+              ),
+              child: const Icon(FeatherIcons.plus)),
+            iconSize: 24.0,
             contentPadding: 3.0,
-            title: "",
-            activeColorPrimary: Theme.of(context).colorScheme.tertiaryContainer,
-            inactiveColorPrimary: Colors.grey
+            activeColorPrimary: Colors.white,
+            inactiveColorPrimary: Colors.white
           ),
           PersistentBottomNavBarItem(
             icon: const Icon(FeatherIcons.settings),
-            iconSize: 20.0,
+            iconSize: 24.0,
             contentPadding: 3.0,
             title: "Settings",
-            activeColorPrimary: Theme.of(context).colorScheme.tertiaryContainer,
+            activeColorPrimary: Theme.of(context).colorScheme.primary,
             inactiveColorPrimary: Colors.grey
           ),
           PersistentBottomNavBarItem(
             icon: const Icon(FeatherIcons.user),
-            iconSize: 20.0,
+            iconSize: 24.0,
             contentPadding: 3.0,
             title: "Profile",
-            activeColorPrimary: Theme.of(context).colorScheme.tertiaryContainer,
+            activeColorPrimary: Theme.of(context).colorScheme.primary,
             inactiveColorPrimary: Colors.grey
           )
         ]
