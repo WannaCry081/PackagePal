@@ -5,10 +5,10 @@ class SettingsProvider extends ChangeNotifier{
   SharedPreferences? _preference;
 
   SettingsProvider() {
-    init();
+    _init();
   }
 
-  Future<void> init() async {
+  Future<void> _init() async {
     _preference = await SharedPreferences.getInstance();
     notifyListeners();
     return;
