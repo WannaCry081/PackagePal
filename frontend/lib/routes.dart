@@ -4,10 +4,13 @@ import "package:frontend/views/Dashboard/index.dart";
 import "package:frontend/views/ForgotPassword/index.dart";
 import "package:frontend/views/Login/index.dart";
 import "package:frontend/views/Register/index.dart";
+import "package:frontend/hocs/private_route_hoc.dart";
 
 Map<String, Widget Function(BuildContext)> routes = {
   "/" : (context) {
-    return OnboardingView();
+    return const PrivateRouteHoc(
+      child : OnboardingView()
+    );
   },
 
   "/auth/login" : (context) {
@@ -23,7 +26,7 @@ Map<String, Widget Function(BuildContext)> routes = {
   },
 
   "/dashboard" : (context){
-    return const Dashboard();
+    return  DashboardView();
   },
 
   "/dashboard/setting/change-pin" : (context) {

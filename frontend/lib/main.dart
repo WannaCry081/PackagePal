@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:frontend/core/providers/user_provider.dart";
 import "package:provider/provider.dart";
 import "package:firebase_core/firebase_core.dart";
 import "package:frontend/routes.dart";
@@ -15,7 +16,8 @@ Future<void> main() async {
   );
 
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (context) => SettingsProvider())
+    ChangeNotifierProvider(create: (context) => SettingsProvider()),
+    ChangeNotifierProvider(create: (context) => UserProvider()),
   ], child: const MyApp()));
   return;
 }

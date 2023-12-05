@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:frontend/widgets/CustomButton.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:flutter_svg/flutter_svg.dart";
+import "package:frontend/viewmodels/auth_viewmodel.dart";
 
 class OnboardingView extends StatefulWidget {
   const OnboardingView({Key? key}) : super(key: key);
@@ -11,8 +12,8 @@ class OnboardingView extends StatefulWidget {
 }
 
 class _OnboardingViewState extends State<OnboardingView> {
-  int currentIndex = 0;
-  final informations = [
+  int _currentIndex = 0;
+  final _informations = [
     {
       "image": "assets/images/Onboarding_1.jpg",
       "title": "Streamlined Package Reception",
@@ -42,13 +43,13 @@ class _OnboardingViewState extends State<OnboardingView> {
           child: PageView.builder(
             onPageChanged: _onPageChanged,
             allowImplicitScrolling: true,
-            itemCount: informations.length,
+            itemCount: _informations.length,
             itemBuilder: (context, index) {
               return Column(
                 children: [
                   Expanded(
                     child: Image(
-                        image: AssetImage(informations[index]["image"]!),
+                        image: AssetImage(_informations[index]["image"]!),
                         width: MediaQuery.of(context).size.width,
                         fit: BoxFit.cover),
                   ),
@@ -59,13 +60,13 @@ class _OnboardingViewState extends State<OnboardingView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const SizedBox(height: 15),
-                            Text(informations[index]["title"].toString(),
+                            Text(_informations[index]["title"].toString(),
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.poppins(
                                     fontSize: 22, fontWeight: FontWeight.bold)),
                             const SizedBox(height: 10),
                             Text(
-                              informations[index]["body"].toString(),
+                              _informations[index]["body"].toString(),
                               textAlign: TextAlign.center,
                               style: GoogleFonts.lato(
                                   fontSize: 16, color: Colors.grey.shade800),
@@ -100,7 +101,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                                 height: 12,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  color: (index == currentIndex)
+                                  color: (index == _currentIndex)
                                       ? Theme.of(context).colorScheme.primary
                                       : Colors.grey.shade200,
                                 ),
@@ -118,7 +119,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                     child: CustomButton(
                         btnColor: Colors.grey.shade100,
                         btnShadow: true,
-                        btnOnTap: () {},
+                        btnOnTap: signInWithGoogle,
                         btnChild: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -140,7 +141,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                       Text("Already have an account? ",
                           style: GoogleFonts.lato(fontSize: 14)),
                       GestureDetector(
-                          onTap: () => navigateToLogin(context),
+                          onTap: () => _navigateToLogin(context),
                           child: Text("Log in",
                               style: GoogleFonts.lato(
                                   fontSize: 14,
@@ -154,14 +155,19 @@ class _OnboardingViewState extends State<OnboardingView> {
     ));
   }
 
-  void navigateToLogin(BuildContext context) {
+  void _navigateToLogin(BuildContext context) {
     Navigator.of(context).pushNamed("/auth/login");
     return;
   }
 
   void _onPageChanged(int value) {
     setState(() {
-      currentIndex = value;
+      _currentIndex = value;
     });
+  }
+
+  void signInWithGoogle() {
+    AuthViewModel().signInWithGoogle();
+    Navigator.of(context).pushReplacementNamed("/dashboard");
   }
 }
