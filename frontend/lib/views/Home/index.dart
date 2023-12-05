@@ -15,17 +15,18 @@ class HomeView extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 14.0),
+                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Row(
                       children: [
                       Container(
-                        height: 30,
-                        width: 30,
+                        height: 40,
+                        width: 40,
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white
@@ -33,7 +34,8 @@ class HomeView extends StatelessWidget {
                         child: Icon(
                           FeatherIcons.mapPin,
                           color: Theme.of(context).colorScheme.secondary,
-                          size: 15.0,
+                          size: 20.0,
+                          weight: 5.0,
                         )
                       ),
                       const SizedBox(width: 10.0),
@@ -44,20 +46,21 @@ class HomeView extends StatelessWidget {
                           bodyText(
                             "Your location",
                             bodyColor: Colors.grey[500],
-                            bodySize: 10.0
+                            bodySize: 14.0
                           ),
                           bodyText(
                             "Cebu City, Cebu",
                             bodyColor: Colors.white,
-                            bodySize: 12.0
+                            bodySize: 16.0
                           ),
                         ],
                       )
                     ],),
                     const Spacer(),
                     Container(
-                      height: 30,
-                      width: 30,
+                      margin: const EdgeInsets.only(right: 8),
+                      height: 40,
+                      width: 40,
                       decoration: const BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.circle
@@ -65,33 +68,28 @@ class HomeView extends StatelessWidget {
                       child: Icon(
                         FeatherIcons.moon,
                         color: Theme.of(context).colorScheme.secondary,
-                        size: 15.0
+                        size: 20.0,
+                        weight: 5.0,
                       )
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(left: 8),
-                      height: 30,
-                      width: 30,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.secondary,
-                        shape: BoxShape.circle
-                      ),
+
+                    const CircleAvatar(
+                      backgroundImage: AssetImage("assets/images/Bubbles.jpg"),
+                      radius: 20,
                     ),
                   ]
                 ),
               ),
           
-              const SizedBox(height: 15.0),
+              const SizedBox(height: 10.0),
           
-              Center(
-                child: SvgPicture.asset(
-                  "assets/svg/DeliveryGirl.svg",
-                  height: MediaQuery.of(context).size.height * 0.28,
-                ),
+              SvgPicture.asset(
+                "assets/svg/DeliveryGirl.svg",
+                height: MediaQuery.of(context).size.height * 0.40,
               ),
           
               Container(
-                height: MediaQuery.of(context).size.height * 0.50,
+                height: MediaQuery.of(context).size.height * 0.65,
                 width: MediaQuery.of(context).size.width,
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 decoration: const BoxDecoration(
@@ -127,7 +125,7 @@ class HomeView extends StatelessWidget {
                           children: [
                             titleText(
                               "Check Your Package",
-                              titleSize: 20.0,
+                              titleSize: 22.0,
                               titleWeight: FontWeight.bold,
                             ),
                             const SizedBox(height: 4),
@@ -141,7 +139,7 @@ class HomeView extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10.0),
                               child: TextField(
-                                style: GoogleFonts.poppins(fontSize : 12.0),
+                                style: GoogleFonts.poppins(fontSize : 14.0),
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                                   border: OutlineInputBorder(
@@ -149,7 +147,7 @@ class HomeView extends StatelessWidget {
                                     borderSide: BorderSide.none
                                   ),
                                     hintStyle: GoogleFonts.poppins(
-                                      fontSize : 12.0,
+                                      fontSize : 14.0,
                                     ),
                                     hintText: 'Enter the package name',
                                     filled: true,
@@ -192,7 +190,7 @@ class HomeView extends StatelessWidget {
     padding: EdgeInsets.all(8),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(10.0),
-      border: Border.all(color: Colors.grey.shade400)
+      border: Border.all(color: Colors.grey.shade300)
     ),
     child: Row(
       children: [
@@ -207,22 +205,19 @@ class HomeView extends StatelessWidget {
         ),
         const SizedBox(width: 8.0),
         Container(
-           constraints: const BoxConstraints(
-            maxWidth: 95.0, // Adjust the maxWidth as needed
-          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               titleText(
                 "Arduino Uno Kit",
-                titleSize: 14.0,
+                titleSize: 16.0,
                 titleWeight: FontWeight.bold,
                 titleOverflow: TextOverflow.ellipsis
               ),
               bodyText(
                 "#djc20c8n3",
-                bodySize: 10.0,
+                bodySize: 13.0,
                 bodyColor: Colors.grey[800],
                 bodyOverflow: TextOverflow.ellipsis
               )
@@ -240,7 +235,7 @@ class HomeView extends StatelessWidget {
             padding: const EdgeInsets.all(6.0),
             child: bodyText(
               "On Process",
-              bodySize: 10,
+              bodySize: 13,
               bodyColor: Colors.white
             ),
           ),
