@@ -12,10 +12,12 @@ Text titleText(
     double ? titleHeight,
     TextAlign ? titleAlignment,
     TextOverflow ? titleOverflow
+    
   }) => Text(
     text,
     textAlign: titleAlignment,
     overflow: titleOverflow,
+    softWrap: true,
     style: GoogleFonts.lato(
       color: titleColor,
       fontSize: titleSize,
