@@ -13,9 +13,23 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  final GlobalKey<FormState> form = GlobalKey<FormState>();
-  final email = TextEditingController(text: "");
-  final password = TextEditingController(text: "");
+  final GlobalKey<FormState> _form = GlobalKey<FormState>();
+  late TextEditingController _email;
+  late TextEditingController _password;
+
+  @override
+  void initState() {
+    super.initState();
+    _email = TextEditingController(text: "");
+    _password = TextEditingController(text: "");
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _email.dispose();
+    _password.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +45,7 @@ class _LoginViewState extends State<LoginView> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 GestureDetector(
-                  onTap: () => navigateBack(context),
+                  onTap: () => Navigator.of(context).pop(),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
@@ -50,18 +64,18 @@ class _LoginViewState extends State<LoginView> {
         ),
         const SizedBox(height: 20),
         Form(
-            key: form,
+            key: _form,
             child: Column(
               children: [
                 const SizedBox(height: 20),
                 CustomFormField(
-                  formData: email,
-                  formHintText: "Email Address",
+                  formData: _email,
+                  formLabelText: "Email Address",
                 ),
                 const SizedBox(height: 20),
                 CustomFormField(
-                    formData: password,
-                    formHintText: "Password",
+                    formData: _password,
+                    formLabelText: "Password",
                     formObsecure: true),
                 Padding(
                     padding: const EdgeInsets.symmetric(
@@ -69,7 +83,8 @@ class _LoginViewState extends State<LoginView> {
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
-                        onTap: () => navigateToForgotPassword(context),
+                        onTap: () => Navigator.of(context)
+                            .pushNamed("/auth/forgot-password"),
                         child: Text("Forgot Password?",
                             style: GoogleFonts.lato(
                                 fontSize: 14,
@@ -137,7 +152,8 @@ class _LoginViewState extends State<LoginView> {
                     Text("Don't have an account? ",
                         style: GoogleFonts.lato(fontSize: 14)),
                     GestureDetector(
-                        onTap: () => navigateToRegister(context),
+                        onTap: () => Navigator.of(context)
+                            .pushReplacementNamed("/auth/register"),
                         child: Text("Sign up",
                             style: GoogleFonts.lato(
                                 fontSize: 14,
@@ -149,20 +165,5 @@ class _LoginViewState extends State<LoginView> {
             ))
       ],
     )));
-  }
-
-  void navigateBack(BuildContext context) {
-    Navigator.of(context).pop();
-    return;
-  }
-
-  void navigateToRegister(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed("/auth/register");
-    return;
-  }
-
-  void navigateToForgotPassword(BuildContext context) {
-    Navigator.of(context).pushNamed("/auth/forgot-password");
-    return;
   }
 }

@@ -1,15 +1,18 @@
 import "package:flutter/material.dart";
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
+import "package:google_fonts/google_fonts.dart";
 
 class CustomFormField extends StatefulWidget {
   final TextEditingController formData;
-  final String formHintText;
+  final String? formHintText;
+  final String? formLabelText;
   final bool formObsecure;
 
   const CustomFormField(
       {Key? key,
       required this.formData,
-      this.formHintText = "",
+      this.formHintText,
+      this.formLabelText,
       this.formObsecure = false})
       : super(key: key);
 
@@ -33,6 +36,10 @@ class _CustomFormFieldState extends State<CustomFormField> {
           controller: widget.formData,
           obscureText: (!isObsecure && widget.formObsecure),
           decoration: InputDecoration(
+              labelStyle: GoogleFonts.poppins(
+                fontSize : 14
+              ),
+              labelText: widget.formLabelText,
               hintText: widget.formHintText,
               suffixIcon: GestureDetector(
                 onTap: () => setState(() {

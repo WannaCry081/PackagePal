@@ -13,10 +13,28 @@ class RegisterView extends StatefulWidget {
 
 class RegisterViewState extends State<RegisterView> {
   final GlobalKey<FormState> form = GlobalKey<FormState>();
-  final fullName = TextEditingController(text: "");
-  final email = TextEditingController(text: "");
-  final confirmPassword = TextEditingController(text: "");
-  final password = TextEditingController(text: "");
+  late TextEditingController _userName;
+  late TextEditingController _email;
+  late TextEditingController _confirmPassword;
+  late TextEditingController _password;
+
+  @override
+  void initState() {
+    super.initState();
+    _userName = TextEditingController(text: "");
+    _email = TextEditingController(text: "");
+    _confirmPassword = TextEditingController(text: "");
+    _password = TextEditingController(text: "");
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _userName.dispose();
+    _email.dispose();
+    _confirmPassword.dispose();
+    _password.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +50,7 @@ class RegisterViewState extends State<RegisterView> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 GestureDetector(
-                  onTap: () => navigateBack(context),
+                  onTap: () => Navigator.of(context).pop(),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
@@ -56,23 +74,23 @@ class RegisterViewState extends State<RegisterView> {
               children: [
                 const SizedBox(height: 20),
                 CustomFormField(
-                  formData: fullName,
-                  formHintText: "Full Name",
+                  formData: _userName,
+                  formLabelText: "Username",
                 ),
                 const SizedBox(height: 20),
                 CustomFormField(
-                  formData: email,
-                  formHintText: "Email Address",
+                  formData: _email,
+                  formLabelText: "Email Address",
                 ),
                 const SizedBox(height: 20),
                 CustomFormField(
-                    formData: confirmPassword,
-                    formHintText: "Confirm Password",
+                    formData: _password,
+                    formLabelText: "Password",
                     formObsecure: true),
                 const SizedBox(height: 20),
                 CustomFormField(
-                    formData: password,
-                    formHintText: "Password",
+                    formData: _confirmPassword,
+                    formLabelText: "Confirm Password",
                     formObsecure: true),
                 const SizedBox(height: 20),
                 Padding(
@@ -94,7 +112,8 @@ class RegisterViewState extends State<RegisterView> {
                     Text("Already have an account? ",
                         style: GoogleFonts.lato(fontSize: 14)),
                     GestureDetector(
-                        onTap: () => navigateToLogin(context),
+                        onTap: () => Navigator.of(context)
+                            .pushReplacementNamed("/auth/login"),
                         child: Text("Sign in",
                             style: GoogleFonts.lato(
                                 fontSize: 14,
@@ -106,14 +125,5 @@ class RegisterViewState extends State<RegisterView> {
             ))
       ],
     )));
-  }
-
-  void navigateBack(BuildContext context) {
-    Navigator.of(context).pop();
-    return;
-  }
-
-  void navigateToLogin(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed("/auth/login");
   }
 }

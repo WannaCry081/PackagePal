@@ -12,8 +12,20 @@ class ForgotPasswordView extends StatefulWidget {
 }
 
 class _ForgotPasswordViewState extends State<ForgotPasswordView> {
-  final GlobalKey<FormState> form = GlobalKey<FormState>();
-  final email = TextEditingController(text: "");
+  final GlobalKey<FormState> _form = GlobalKey<FormState>();
+  late TextEditingController _email;
+
+  @override
+  void initState() {
+    super.initState();
+    _email = TextEditingController(text: "");
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _email.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +70,13 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
         ),
         const SizedBox(height: 20),
         Form(
-            key: form,
+            key: _form,
             child: Column(
               children: [
                 const SizedBox(height: 20),
                 CustomFormField(
-                  formData: email,
-                  formHintText: "Email Address",
+                  formData: _email,
+                  formLabelText: "Email Address",
                 ),
                 const SizedBox(height: 20),
                 Padding(
