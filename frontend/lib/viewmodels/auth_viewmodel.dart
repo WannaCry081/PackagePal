@@ -3,9 +3,10 @@ import "package:google_sign_in/google_sign_in.dart";
 
 class AuthViewModel {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _signIn = GoogleSignIn();
 
   Future<void> signInWithGoogle() async {
-    final googleUser = await GoogleSignIn().signIn();
+    final googleUser = await _signIn.signIn();
     final googleAuth = await googleUser?.authentication;
 
     final credential = GoogleAuthProvider.credential(
@@ -16,6 +17,7 @@ class AuthViewModel {
   }
 
   void signOutGoogle() async {
-    await GoogleSignIn().signOut();
+    await _signIn.signOut();
+    await _auth.signOut();
   }
 }
