@@ -119,7 +119,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                     child: CustomButton(
                         btnColor: Colors.grey.shade100,
                         btnShadow: true,
-                        btnOnTap: signInWithGoogle,
+                        btnOnTap: () => AuthViewModel().signInWithGoogle(),
                         btnChild: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -135,39 +135,23 @@ class _OnboardingViewState extends State<OnboardingView> {
                             ])),
                   ),
                   const SizedBox(height: 5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Already have an account? ",
-                          style: GoogleFonts.lato(fontSize: 14)),
-                      GestureDetector(
-                          onTap: () => _navigateToLogin(context),
-                          child: Text("Log in",
-                              style: GoogleFonts.lato(
-                                  fontSize: 14,
-                                  color: Theme.of(context).colorScheme.primary,
-                                  fontWeight: FontWeight.bold)))
-                    ],
-                  ),
+                  GestureDetector(
+                      onTap: () =>
+                          Navigator.of(context).pushNamed("/auth/login"),
+                      child: Text("Continue with Email Instead",
+                          style: GoogleFonts.lato(
+                              fontSize: 14,
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: FontWeight.bold))),
                   const SizedBox(height: 20)
                 ])),
       ],
     ));
   }
 
-  void _navigateToLogin(BuildContext context) {
-    Navigator.of(context).pushNamed("/auth/login");
-    return;
-  }
-
   void _onPageChanged(int value) {
     setState(() {
       _currentIndex = value;
     });
-  }
-
-  void signInWithGoogle() {
-    AuthViewModel().signInWithGoogle();
-    Navigator.of(context).pushReplacementNamed("/dashboard");
   }
 }
