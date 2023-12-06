@@ -1,3 +1,4 @@
+import "package:provider/provider.dart";
 import "package:flutter/material.dart";
 import "package:frontend/views/CreateOrder/index.dart";
 import "package:frontend/views/Home/index.dart";
@@ -7,9 +8,11 @@ import "package:frontend/views/Settings/index.dart";
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 
+import "package:frontend/viewmodels/auth_viewmodel.dart";
+import "package:frontend/core/providers/user_provider.dart";
 
-class Dashboard extends StatelessWidget {
-  Dashboard({super.key});
+class DashboardView extends StatelessWidget {
+  DashboardView({Key? key}) : super(key: key);
 
   final PersistentTabController _controller = PersistentTabController(initialIndex: 0);
 
