@@ -2,6 +2,8 @@ import "package:flutter/material.dart";
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:flutter_svg/flutter_svg.dart";
 import "package:frontend/core/constants/text_theme.dart";
+import "package:frontend/views/OrderView/index.dart";
+import "package:frontend/widgets/OrderCard.dart";
 import "package:google_fonts/google_fonts.dart";
 
 class HomeView extends StatelessWidget {
@@ -83,9 +85,11 @@ class HomeView extends StatelessWidget {
           
               const SizedBox(height: 10.0),
           
-              SvgPicture.asset(
-                "assets/svg/DeliveryGirl.svg",
-                height: MediaQuery.of(context).size.height * 0.40,
+              Center(
+                child: SvgPicture.asset(
+                  "assets/svg/DeliveryGirl.svg",
+                  height: MediaQuery.of(context).size.height * 0.40,
+                ),
               ),
           
               Container(
@@ -125,17 +129,17 @@ class HomeView extends StatelessWidget {
                           children: [
                             titleText(
                               "Check Your Package",
-                              titleSize: 22.0,
+                              titleSize: 24.0,
                               titleWeight: FontWeight.bold,
                             ),
                             const SizedBox(height: 4),
                             bodyText(
                               "Enter the name of the package you want to view",
                               bodySize: 12.0,
-                              bodyColor: Colors.grey[800],
+                              bodyColor: Colors.grey[700],
                               bodyAlignment: TextAlign.center,
                             ),
-                            const SizedBox(height: 6),
+                            const SizedBox(height: 10),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10.0),
                               child: TextField(
@@ -172,7 +176,16 @@ class HomeView extends StatelessWidget {
                       )
                     ),
                     const SizedBox(height: 10.0),
-                    PackageCard(context),
+                    OrderCard(
+                      status: "On Process",
+                      orderCardOpenContents: () => {
+                        Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const OrderView()
+                              )
+                            )
+                      },
+                    )
                   ]
                 )
               )
@@ -185,7 +198,7 @@ class HomeView extends StatelessWidget {
 
 
   Widget PackageCard (context,) => Container(
-    height: 65,
+    height: 75,
     width: MediaQuery.of(context).size.width,
     padding: EdgeInsets.all(8),
     decoration: BoxDecoration(
