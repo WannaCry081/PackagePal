@@ -101,7 +101,7 @@ class HomeView extends StatelessWidget {
               Container(
                 height: MediaQuery.of(context).size.height * 0.65,
                 width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -192,7 +192,7 @@ class HomeView extends StatelessWidget {
                             )
                       },
                     )
-                  ]
+                  ] 
                 )
               )
             ],
@@ -223,29 +223,27 @@ class HomeView extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8.0),
-        Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              titleText(
-                "Arduino Uno Kit",
-                titleSize: 16.0,
-                titleWeight: FontWeight.bold,
-                titleOverflow: TextOverflow.ellipsis
-              ),
-              bodyText(
-                "#djc20c8n3",
-                bodySize: 13.0,
-                bodyColor: Colors.grey[800],
-                bodyOverflow: TextOverflow.ellipsis
-              )
-            ],
-          ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            titleText(
+              "Arduino Uno Kit",
+              titleSize: 16.0,
+              titleWeight: FontWeight.bold,
+              titleOverflow: TextOverflow.ellipsis
+            ),
+            bodyText(
+              "#djc20c8n3",
+              bodySize: 13.0,
+              bodyColor: Colors.grey[800],
+              bodyOverflow: TextOverflow.ellipsis
+            )
+          ],
         ),
         const Spacer(),
         Container(
-          margin: EdgeInsets.symmetric(horizontal: 10),
+          margin: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primary,
             borderRadius: BorderRadius.circular(7.0)
