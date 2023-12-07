@@ -30,40 +30,9 @@ class HomeView extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Row(
-                      children: [
-                      Container(
-                        height: 40,
-                        width: 40,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white
-                        ),
-                        child: Icon(
-                          FeatherIcons.mapPin,
-                          color: Theme.of(context).colorScheme.secondary,
-                          size: 20.0,
-                          weight: 5.0,
-                        )
-                      ),
-                      const SizedBox(width: 10.0),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          bodyText(
-                            "Your location",
-                            bodyColor: Colors.grey[500],
-                            bodySize: 14.0
-                          ),
-                          bodyText(
-                            "Cebu City, Cebu",
-                            bodyColor: Colors.white,
-                            bodySize: 16.0
-                          ),
-                        ],
-                      )
-                    ],),
+                    bodyText("Welcome back, Shiela!",
+                    bodySize: 16.0,
+                    bodyColor: Colors.white),
                     const Spacer(),
                     Container(
                       margin: const EdgeInsets.only(right: 8),
