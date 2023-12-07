@@ -55,9 +55,7 @@ class OrdersListView extends StatelessWidget {
                             status: "On Process",
                             orderCardOpenContents: () => {
                               Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const OrderView()
-                                )
+                                MaterialPageRoute(builder: (context) => const OrderView())
                               )
                             },
                           ),

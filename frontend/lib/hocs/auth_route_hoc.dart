@@ -26,7 +26,7 @@ class AuthRouteHoc extends StatelessWidget {
                 email: FirebaseAuth.instance.currentUser!.email,
                 displayName: FirebaseAuth.instance.currentUser!.displayName,
                 photoUrl: FirebaseAuth.instance.currentUser!.photoURL));
-            return LoadingView(child: const DashboardView());
+            return LoadingView(child: DashboardView());
           } else if (snapshot.hasError) {
             return const ErrorView();
           } else {
