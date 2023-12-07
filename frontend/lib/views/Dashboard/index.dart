@@ -8,7 +8,6 @@ import "package:frontend/views/Settings/index.dart";
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 
-import "package:frontend/viewmodels/auth_viewmodel.dart";
 import "package:frontend/core/providers/user_provider.dart";
 
 class DashboardView extends StatelessWidget {
@@ -18,7 +17,24 @@ class DashboardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final data = userProvider.getUserData();
+
     return Scaffold(
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 50.0),
+        child: FloatingActionButton(
+          onPressed: () => {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const CreateOrderView())
+            )
+          },
+          child: const Icon(
+            FeatherIcons.plus,
+            color: Colors.white
+          )
+        ),
+      ),
       body: PersistentTabView(
         context,
         controller: _controller,
@@ -28,8 +44,6 @@ class DashboardView extends StatelessWidget {
         screens: const [
           HomeView(),
           OrdersListView(),
-          CreateOrderView(),
-          SettingsView(),
           ProfileView()
         ],
         items: [
@@ -46,28 +60,6 @@ class DashboardView extends StatelessWidget {
             iconSize: 24.0,
             contentPadding: 3.0,
             title: "Orders",
-            activeColorPrimary: Theme.of(context).colorScheme.primary,
-            inactiveColorPrimary: Colors.grey
-          ),
-          PersistentBottomNavBarItem(
-            icon: Container(
-              height: 40,
-              width: 40,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Theme.of(context).colorScheme.primary
-              ),
-              child: const Icon(FeatherIcons.plus)),
-            iconSize: 24.0,
-            contentPadding: 3.0,
-            activeColorPrimary: Colors.white,
-            inactiveColorPrimary: Colors.white
-          ),
-          PersistentBottomNavBarItem(
-            icon: const Icon(FeatherIcons.settings),
-            iconSize: 24.0,
-            contentPadding: 3.0,
-            title: "Settings",
             activeColorPrimary: Theme.of(context).colorScheme.primary,
             inactiveColorPrimary: Colors.grey
           ),
