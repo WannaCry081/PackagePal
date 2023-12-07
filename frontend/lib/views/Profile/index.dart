@@ -22,6 +22,12 @@ class _EditProfileViewState extends State<EditProfileView> {
     _displayName = TextEditingController(text: "");
   }
 
+  @override 
+  void dispose(){
+    super.dispose();
+    _displayName.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +104,7 @@ class _EditProfileViewState extends State<EditProfileView> {
               
               const SizedBox(height: 20),
 
-               Padding(
+              Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: CustomButton(
                     btnColor: Theme.of(context).colorScheme.primary,
