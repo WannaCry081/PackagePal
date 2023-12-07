@@ -1,107 +1,117 @@
 import "package:flutter/material.dart";
+import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:frontend/core/constants/text_theme.dart";
+import "package:frontend/widgets/CustomButton.dart";
+import "package:frontend/widgets/CustomFormField.dart";
+import "package:google_fonts/google_fonts.dart";
 
-class ProfileView extends StatelessWidget {
-  const ProfileView({super.key});
+class EditProfileView extends StatefulWidget {
+  const EditProfileView({super.key});
+
+  @override
+  State<EditProfileView> createState() => _EditProfileViewState();
+}
+
+class _EditProfileViewState extends State<EditProfileView> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late TextEditingController _displayName;
+
+  @override
+  void initState(){
+    super.initState();
+    _displayName = TextEditingController(text: "");
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/images/Profile_MeshGradient.png"),
-          fit: BoxFit.cover
-        )
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              const SizedBox(height: 20.0),
-              Row(
-                children: [
-                  titleText(
-                    "User Profile",
-                    titleSize: 20.0,
-                    titleColor: Colors.grey[800]
-                  ),
-                ],
-              ),
-              const SizedBox(height: 25.0),
-              // Container( 
-              //   height: 140,
-              //   width: 140,
-              //   decoration: BoxDecoration(
-              //     shape: BoxShape.circle,
-              //     color: Theme.of(context).colorScheme.primary,
-              //   ),
-              // ),
-
-              const CircleAvatar(
-                backgroundImage: AssetImage("assets/images/Bubbles.jpg"),
-                radius: 70,
-              ),
-              const SizedBox(height: 20.0),
-              titleText(
-                "Shiela Mae Lepon",
-                titleSize: 26.0,
-                titleWeight: FontWeight.bold,
-              ),
-              const SizedBox(height: 30.0),
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 25.0, horizontal: 16.0),
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.white,
-                  boxShadow: [
-                     BoxShadow(
-                      offset: const Offset(0, 15),
-                      spreadRadius: 0,
-                      blurRadius: 30,
-                      color: Colors.black.withOpacity(0.10),
-                    )
-                  ]
-                ),
-                child: Column(
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+             Padding(
+                padding: const EdgeInsets.fromLTRB(20, 25, 20, 10),
+                child: Row(
                   children: [
-                    profileItem("Email", "shiela.mlepon@gmail.com"),
-                    profileItem("Phone Number", "09254747461"),
-                    profileItem("Address", "Bulacao Pardo, Cebu City, Cebu, 6000"),
-                  ]
-                )
-              )
-            ]
-          ),
-        )
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Icon(FeatherIcons.arrowLeft, color: Colors.grey[800])),
+                    const SizedBox(width: 10),
+                    bodyText(
+                      "Change Display Name",
+                      bodySize: 20.0,
+                      bodyWeight: FontWeight.w500,
+                      bodyColor: Colors.grey[800]
+                    )
+                  ],),
+                ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      titleText("Current", titleColor: Colors.grey[600], titleSize: 14),
+                      const SizedBox(height: 5),
+                      Container(
+                        height: 55,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary.withAlpha(20),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: TextFormField(
+                          readOnly: true,
+                          decoration: InputDecoration(
+                              labelStyle: GoogleFonts.poppins(
+                                fontSize : 14,
+                                color: Colors.grey[600]
+                              ),
+                              // labelText: widget.formLabelText,
+                              hintText: "hello world",
+                              hintStyle: GoogleFonts.poppins(
+                                fontSize: 16,
+                                color: Colors.grey,
+                              ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(color: Colors.grey.shade200)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(color: Colors.grey.shade200)),
+                              errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(color: Colors.red.shade300)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.primary))),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              CustomFormField(
+                formData: _displayName,
+                formLabelText: "New Display Name" ),
+              
+              const SizedBox(height: 20),
+
+               Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: CustomButton(
+                    btnColor: Theme.of(context).colorScheme.primary,
+                    btnOnTap: () {},
+                    btnChild: Text("Save Changes",
+                        style: GoogleFonts.lato(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(context).colorScheme.background)),
+                )),
+          ],
+        ),
       )
     );
   }
-
-  Widget profileItem (label, data) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 10.0),
-    child: Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            titleText(
-              label,
-              titleSize: 16.0,
-              titleColor: Colors.grey
-            ),
-            Container(
-              constraints: const BoxConstraints(maxWidth: 225.0),
-              child: bodyText(
-                data,
-                bodySize: 16.0,
-              ),
-            )
-          ],
-        ),
-        Divider(color: Colors.grey[200])
-      ],
-    ),
-  );
 }
