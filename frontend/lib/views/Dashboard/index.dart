@@ -4,6 +4,8 @@ import "package:frontend/viewmodels/auth_viewmodel.dart";
 import "package:frontend/core/providers/user_provider.dart";
 
 class DashboardView extends StatelessWidget {
+  static String id = "/dashboard";
+
   const DashboardView({Key? key}) : super(key: key);
 
   @override
@@ -14,6 +16,7 @@ class DashboardView extends StatelessWidget {
         body: Center(
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Image.network(data?["photoUrl"]),
       Text("${data}"),
       ElevatedButton(
           onPressed: () => AuthViewModel().signOutGoogle(),

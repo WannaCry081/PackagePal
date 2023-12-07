@@ -1,5 +1,8 @@
+import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:frontend/core/providers/user_provider.dart";
+import "package:frontend/views/Dashboard/index.dart";
+import "package:frontend/views/Onboarding/index.dart";
 import "package:provider/provider.dart";
 import "package:firebase_core/firebase_core.dart";
 import "package:frontend/routes.dart";
@@ -36,7 +39,15 @@ class MyApp extends StatelessWidget {
         theme: lightTheme,
         darkTheme: darkTheme,
         themeMode: (isDark) ? ThemeMode.dark : ThemeMode.light,
-        initialRoute: "/",
+        initialRoute: _getInitialRoute(),
         routes: routes);
+  }
+
+  String? _getInitialRoute() {
+    if (FirebaseAuth.instance.currentUser != null) {
+      return DashboardView.id;
+    } else {
+      return OnboardingView.id;
+    }
   }
 }
