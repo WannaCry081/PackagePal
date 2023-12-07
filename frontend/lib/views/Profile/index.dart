@@ -45,7 +45,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     const SizedBox(width: 10),
                     bodyText(
                       "Change Display Name",
-                      bodySize: 20.0,
+                      bodySize: 18.0,
                       bodyWeight: FontWeight.w500,
                       bodyColor: Colors.grey[800]
                     )

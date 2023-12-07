@@ -46,8 +46,8 @@ class _EditDeliveryInfoState extends State<EditDeliveryInfo> {
                     child: Icon(FeatherIcons.arrowLeft, color: Colors.grey[800])),
                   const SizedBox(width: 10),
                   bodyText(
-                    "Change Delivery Infomation",
-                    bodySize: 20.0,
+                    "Change Delivery Information",
+                    bodySize: 18.0,
                     bodyWeight: FontWeight.w500,
                     bodyColor: Colors.grey[800]
                   )

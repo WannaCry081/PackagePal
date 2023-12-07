@@ -50,7 +50,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                     const SizedBox(width: 10),
                     bodyText(
                       "Change Password",
-                      bodySize: 20.0,
+                      bodySize: 18.0,
                       bodyWeight: FontWeight.w500,
                       bodyColor: Colors.grey[800]
                     )
