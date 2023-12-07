@@ -280,7 +280,6 @@ class _CreateOrderViewState extends State<CreateOrderView> {
                 )),
 
                 const SizedBox(height: 30),
-                
               ],
             ),
           )

@@ -1,10 +1,9 @@
+import "package:frontend/views/Settings/index.dart";
 import "package:provider/provider.dart";
 import "package:flutter/material.dart";
 import "package:frontend/views/CreateOrder/index.dart";
 import "package:frontend/views/Home/index.dart";
 import "package:frontend/views/OrdersList/index.dart";
-import "package:frontend/views/Profile/index.dart";
-import "package:frontend/views/Settings/index.dart";
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 
@@ -22,8 +21,9 @@ class DashboardView extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 50.0),
+        padding: const EdgeInsets.only(bottom: 70.0),
         child: FloatingActionButton(
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           onPressed: () => {
             Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const CreateOrderView())
@@ -44,7 +44,7 @@ class DashboardView extends StatelessWidget {
         screens: const [
           HomeView(),
           OrdersListView(),
-          ProfileView()
+          SettingsView()
         ],
         items: [
           PersistentBottomNavBarItem(
@@ -64,7 +64,7 @@ class DashboardView extends StatelessWidget {
             inactiveColorPrimary: Colors.grey
           ),
           PersistentBottomNavBarItem(
-            icon: const Icon(FeatherIcons.user),
+            icon: const Icon(FeatherIcons.settings),
             iconSize: 24.0,
             contentPadding: 3.0,
             title: "Profile",
