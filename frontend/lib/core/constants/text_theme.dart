@@ -43,6 +43,7 @@ Text bodyText(
   text,
   textAlign: bodyAlignment,
   overflow: bodyOverflow,
+  softWrap: true,
   style : GoogleFonts.poppins(
     color : bodyColor,
     fontSize : bodySize,
