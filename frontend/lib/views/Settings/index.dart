@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:frontend/core/constants/text_theme.dart";
 import "package:frontend/core/providers/user_provider.dart";
+import "package:frontend/viewmodels/auth_viewmodel.dart";
 import "package:frontend/views/ChangePassword/index.dart";
 import "package:frontend/views/DeliveryInformation/index.dart";
 import 'package:frontend/views/Profile/index.dart';
@@ -112,7 +113,7 @@ class _SettingsViewState extends State<SettingsView> {
 
                         CustomButton(
                           btnColor: Theme.of(context).colorScheme.primary,
-                          btnOnTap: () {},
+                          btnOnTap: () => AuthViewModel().signOutGoogle(),
                           btnChild: Text("Logout",
                             style: GoogleFonts.lato(
                                 fontSize: 16,
