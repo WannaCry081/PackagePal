@@ -2,15 +2,21 @@ import "package:flutter/material.dart";
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:flutter_svg/flutter_svg.dart";
 import "package:frontend/core/constants/text_theme.dart";
+import "package:frontend/core/providers/user_provider.dart";
 import "package:frontend/views/OrderView/index.dart";
 import "package:frontend/widgets/OrderCard.dart";
 import "package:google_fonts/google_fonts.dart";
+import "package:provider/provider.dart";
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
+
+    final userProvider = Provider.of<UserProvider>(context);
+    final data = userProvider.getUserData();
+
     return Container(
       color: const Color.fromARGB(255, 13, 21, 23),
       child: SafeArea(
@@ -75,8 +81,8 @@ class HomeView extends StatelessWidget {
                       )
                     ),
 
-                    const CircleAvatar(
-                      backgroundImage: AssetImage("assets/images/Bubbles.jpg"),
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(data!['photoUrl']),
                       radius: 20,
                     ),
                   ]
