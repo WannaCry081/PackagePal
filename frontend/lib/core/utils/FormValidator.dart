@@ -32,7 +32,7 @@ class FormValidator {
       return "Confirm Password is Required";
     }
 
-    if (!(password.compareTo(value) as bool)) {
+    if (password != value) {
       return "Password does not match";
     }
     return null;
