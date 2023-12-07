@@ -35,12 +35,6 @@ class _SettingsViewState extends State<SettingsView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                titleText(
-                  "Settings",
-                  titleSize: 20.0,
-                  titleAlignment: TextAlign.center
-                ),
-            
                 const SizedBox(height: 35.0),
                 CircleAvatar(
                   backgroundImage: NetworkImage(data!['photoUrl']),
