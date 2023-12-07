@@ -162,6 +162,63 @@ class _CreateOrderViewState extends State<CreateOrderView> {
                 ),
               ),
 
+              //Setup PIN Code
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 20.0),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary.withAlpha(10),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.tertiary.withAlpha(50))
+                  ),
+                  child: (
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                           padding: const EdgeInsets.symmetric(horizontal:20.0),
+                           child: titleText(
+                            "Setup PIN Code",
+                            titleSize: 20.0,
+                            titleColor: Theme.of(context).colorScheme.secondary,
+                            titleWeight: FontWeight.bold)),
+
+                        const SizedBox(height: 20),
+
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomFormField(
+                                formData: _pin,
+                                formLabelText: "PIN Code"),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(right: 20),
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              height: 55,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Center(
+                                child: bodyText(
+                                  "Auto Generate",
+                                  bodySize: 14.0,
+                                  bodyColor: Colors.white,
+                                  bodyWeight: FontWeight.w600
+                                ),
+                              )
+                            )
+                          ],
+                        ),
+                      ],
+                    )
+                  )
+                ),
+              )
               
             ],
           )
