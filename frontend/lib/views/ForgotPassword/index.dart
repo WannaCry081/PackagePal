@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
+import "package:frontend/core/utils/FormValidator.dart";
 import "package:frontend/widgets/CustomFormField.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:frontend/widgets/CustomButton.dart";
@@ -14,6 +15,7 @@ class ForgotPasswordView extends StatefulWidget {
 class _ForgotPasswordViewState extends State<ForgotPasswordView> {
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
   late TextEditingController _email;
+  int _gap = 470;
 
   @override
   void initState() {
@@ -77,13 +79,24 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                 CustomFormField(
                   formData: _email,
                   formLabelText: "Email Address",
+                  formValidator: FormValidator().validateEmail,
                 ),
                 const SizedBox(height: 20),
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: CustomButton(
                       btnColor: Theme.of(context).colorScheme.primary,
-                      btnOnTap: () {},
+                      btnOnTap: () {
+                        if (_form.currentState!.validate()) {
+                          setState(() {
+                            _gap = 475;
+                          });
+                        } else {
+                          setState(() {
+                            _gap = 495;
+                          });
+                        }
+                      },
                       btnChild: Text("Submit",
                           style: GoogleFonts.lato(
                               fontSize: 16,
@@ -92,7 +105,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                     )),
               ],
             )),
-        SizedBox(height: MediaQuery.of(context).size.height - 460),
+        SizedBox(height: MediaQuery.of(context).size.height - _gap),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

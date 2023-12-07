@@ -1,9 +1,11 @@
 import "package:flutter/material.dart";
-import "package:flutter_feather_icons/flutter_feather_icons.dart";
-import "package:frontend/widgets/CustomFormField.dart";
-import "package:google_fonts/google_fonts.dart";
-import "package:frontend/widgets/CustomButton.dart";
 import "package:flutter_svg/flutter_svg.dart";
+import "package:google_fonts/google_fonts.dart";
+import "package:flutter_feather_icons/flutter_feather_icons.dart";
+import "package:frontend/widgets/CustomButton.dart";
+import "package:frontend/widgets/CustomFormField.dart";
+import "package:frontend/viewmodels/auth_viewmodel.dart";
+import "package:frontend/core/utils/FormValidator.dart";
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -16,6 +18,7 @@ class _LoginViewState extends State<LoginView> {
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
   late TextEditingController _email;
   late TextEditingController _password;
+  int _gap = 715;
 
   @override
   void initState() {
@@ -71,12 +74,15 @@ class _LoginViewState extends State<LoginView> {
                 CustomFormField(
                   formData: _email,
                   formLabelText: "Email Address",
+                  formValidator: FormValidator().validateEmail,
                 ),
                 const SizedBox(height: 20),
                 CustomFormField(
-                    formData: _password,
-                    formLabelText: "Password",
-                    formObsecure: true),
+                  formData: _password,
+                  formLabelText: "Password",
+                  formObsecure: true,
+                  formValidator: FormValidator().validatePassword,
+                ),
                 Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 10),
@@ -97,7 +103,13 @@ class _LoginViewState extends State<LoginView> {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: CustomButton(
                       btnColor: Theme.of(context).colorScheme.primary,
-                      btnOnTap: () {},
+                      btnOnTap: () {
+                        if (_form.currentState!.validate()) {
+                          setState(() => _gap = 715);
+                        } else {
+                          setState(() => _gap = 760);
+                        }
+                      },
                       btnChild: Text("Login",
                           style: GoogleFonts.lato(
                               fontSize: 16,
@@ -130,7 +142,7 @@ class _LoginViewState extends State<LoginView> {
                   child: CustomButton(
                       btnShadow: false,
                       btnColor: Colors.grey.shade100,
-                      btnOnTap: () {},
+                      btnOnTap: () => AuthViewModel().signInWithGoogle(),
                       btnChild: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -145,7 +157,7 @@ class _LoginViewState extends State<LoginView> {
                             )
                           ])),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height - 700),
+                SizedBox(height: MediaQuery.of(context).size.height - _gap),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
