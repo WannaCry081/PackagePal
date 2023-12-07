@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_svg/flutter_svg.dart";
+import "package:frontend/views/Register/index.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:frontend/widgets/CustomButton.dart";
@@ -8,7 +9,9 @@ import "package:frontend/viewmodels/auth_viewmodel.dart";
 import "package:frontend/core/utils/FormValidator.dart";
 
 class LoginView extends StatefulWidget {
-  const LoginView({super.key});
+  static String id = "/login";
+
+  const LoginView({Key? key}) : super(key: key);
 
   @override
   State<LoginView> createState() => _LoginViewState();
@@ -105,6 +108,11 @@ class _LoginViewState extends State<LoginView> {
                       btnColor: Theme.of(context).colorScheme.primary,
                       btnOnTap: () {
                         if (_form.currentState!.validate()) {
+                          AuthViewModel().signInWithEmail(
+                              _email.text.trim(), _password.text.trim());
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/dashboard', (Route<dynamic> route) => false);
+
                           setState(() => _gap = 715);
                         } else {
                           setState(() => _gap = 760);
@@ -165,7 +173,7 @@ class _LoginViewState extends State<LoginView> {
                         style: GoogleFonts.lato(fontSize: 14)),
                     GestureDetector(
                         onTap: () => Navigator.of(context)
-                            .pushReplacementNamed("/auth/register"),
+                            .pushReplacementNamed(RegisterView.id),
                         child: Text("Sign up",
                             style: GoogleFonts.lato(
                                 fontSize: 14,

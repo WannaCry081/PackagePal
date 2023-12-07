@@ -1,12 +1,16 @@
 import "package:flutter/material.dart";
+import "package:frontend/views/Login/index.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:frontend/widgets/CustomFormField.dart";
 import "package:frontend/widgets/CustomButton.dart";
 import "package:frontend/core/utils/FormValidator.dart";
+import "package:frontend/viewmodels/auth_viewmodel.dart";
 
 class RegisterView extends StatefulWidget {
-  const RegisterView({super.key});
+  static String id = "/register";
+
+  const RegisterView({Key? key}) : super(key: key);
 
   @override
   State<RegisterView> createState() => RegisterViewState();
@@ -102,6 +106,11 @@ class RegisterViewState extends State<RegisterView> {
                       btnColor: Theme.of(context).colorScheme.primary,
                       btnOnTap: () {
                         if (_form.currentState!.validate()) {
+                          AuthViewModel().signUpWithEmail(
+                              _email.text.trim(), _password.text.trim());
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/dashboard', (Route<dynamic> route) => false);
+
                           setState(() {
                             _gap = 645;
                           });
@@ -126,7 +135,7 @@ class RegisterViewState extends State<RegisterView> {
                         style: GoogleFonts.lato(fontSize: 14)),
                     GestureDetector(
                         onTap: () => Navigator.of(context)
-                            .pushReplacementNamed("/auth/login"),
+                            .pushReplacementNamed(LoginView.id),
                         child: Text("Sign in",
                             style: GoogleFonts.lato(
                                 fontSize: 14,

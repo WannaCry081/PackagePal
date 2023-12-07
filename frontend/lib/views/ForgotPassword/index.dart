@@ -6,7 +6,9 @@ import "package:google_fonts/google_fonts.dart";
 import "package:frontend/widgets/CustomButton.dart";
 
 class ForgotPasswordView extends StatefulWidget {
-  const ForgotPasswordView({super.key});
+  static String id = "/forgot-password";
+
+  const ForgotPasswordView({Key? key}) : super(key: key);
 
   @override
   State<ForgotPasswordView> createState() => _ForgotPasswordViewState();
@@ -43,7 +45,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 GestureDetector(
-                  onTap: () => navigateBack(context),
+                  onTap: () => Navigator.of(context).pop(),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
@@ -112,7 +114,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
             Text("Remembered your Password? ",
                 style: GoogleFonts.lato(fontSize: 14)),
             GestureDetector(
-                onTap: () => navigateBack(context),
+                onTap: () => Navigator.of(context).pop(),
                 child: Text("Sign in",
                     style: GoogleFonts.lato(
                         fontSize: 14,
@@ -122,10 +124,5 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
         ),
       ],
     )));
-  }
-
-  void navigateBack(BuildContext context) {
-    Navigator.of(context).pop();
-    return;
   }
 }
