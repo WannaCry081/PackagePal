@@ -37,7 +37,8 @@ class _CustomFormFieldState extends State<CustomFormField> {
           obscureText: (!isObsecure && widget.formObsecure),
           decoration: InputDecoration(
               labelStyle: GoogleFonts.poppins(
-                fontSize : 14
+                fontSize : 14,
+                color: Colors.grey[600]
               ),
               labelText: widget.formLabelText,
               hintText: widget.formHintText,
