@@ -49,6 +49,7 @@ dependencies:
   shimmer: ^3.0.0
   persistent_bottom_nav_bar_v2: any
   firebase_storage: ^11.5.4
+  cloud_firestore: ^4.13.5
 
 dev_dependencies:
   flutter_test:
