@@ -51,7 +51,7 @@ class HomeView extends StatelessWidget {
                     ),
 
                     CircleAvatar(
-                      backgroundImage: NetworkImage(data!['photoUrl']),
+                      backgroundImage: NetworkImage(data?['photoUrl'] ?? ""),
                       radius: 20,
                     ),
                   ]
@@ -175,7 +175,7 @@ class HomeView extends StatelessWidget {
   Widget PackageCard (context,) => Container(
     height: 75,
     width: MediaQuery.of(context).size.width,
-    padding: EdgeInsets.all(8),
+    padding: const EdgeInsets.all(8),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(10.0),
       border: Border.all(color: Colors.grey.shade300)

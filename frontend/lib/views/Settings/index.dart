@@ -38,7 +38,7 @@ class _SettingsViewState extends State<SettingsView> {
               children: [
                 const SizedBox(height: 35.0),
                 CircleAvatar(
-                  backgroundImage: NetworkImage(data!['photoUrl']),
+                  backgroundImage: NetworkImage(data?['photoUrl'] ?? ""),
                   radius: 60,
                 ),
                 const SizedBox(height: 20.0),
