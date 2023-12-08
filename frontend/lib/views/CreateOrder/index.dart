@@ -20,6 +20,7 @@ class _CreateOrderViewState extends State<CreateOrderView> {
   late TextEditingController _price;
   late TextEditingController _driverName;
   late TextEditingController _driverNumber;
+  late TextEditingController _status;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _CreateOrderViewState extends State<CreateOrderView> {
     _price = TextEditingController(text: "");
     _driverName = TextEditingController(text: "");
     _driverNumber = TextEditingController(text: "");
+    _status = TextEditingController(text: "On Process");
   }
 
   @override
@@ -41,6 +43,7 @@ class _CreateOrderViewState extends State<CreateOrderView> {
     _price.dispose();
     _driverName.dispose();
     _driverNumber.dispose();
+    _status.dispose();
   }
 
 
