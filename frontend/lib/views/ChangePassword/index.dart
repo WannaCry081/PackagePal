@@ -38,67 +38,69 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
   Widget build(BuildContext context) {
      return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-             Padding(
-                padding: const EdgeInsets.fromLTRB(20, 25, 20, 10),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Icon(FeatherIcons.arrowLeft, color: Colors.grey[800])),
-                    const SizedBox(width: 10),
-                    bodyText(
-                      "Change Password",
-                      bodySize: 18.0,
-                      bodyWeight: FontWeight.w500,
-                      bodyColor: Colors.grey[800]
-                    )
-                  ],),
-                ),
-
-              Form(
-                key: _formkey,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: Column(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+               Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 25, 20, 10),
+                  child: Row(
                     children: [
-                      CustomFormField(
-                          formData: _oldPassword,
-                          formObsecure: true,
-                          formLabelText: "Current Password" ),
-                        
-                      const SizedBox(height: 20),
-                      CustomFormField(
-                        formData: _newPassword,
-                        formObsecure: true,
-                        formLabelText: "New Password" ),
-                      
-                      const SizedBox(height: 20),
-                      CustomFormField(
-                        formData: _confirmPassword,
-                        formObsecure: true,
-                        formLabelText: "Confirm New Password" ),
-                      
-                      const SizedBox(height: 20),
-                  
-                      Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: CustomButton(
-                            btnColor: Theme.of(context).colorScheme.primary,
-                            btnOnTap: () {},
-                            btnChild: Text("Save Changes",
-                                style: GoogleFonts.lato(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Theme.of(context).colorScheme.background)),
-                        )),
-                    ],
+                      GestureDetector(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Icon(FeatherIcons.arrowLeft, color: Colors.grey[800])),
+                      const SizedBox(width: 10),
+                      bodyText(
+                        "Change Password",
+                        bodySize: 18.0,
+                        bodyWeight: FontWeight.w500,
+                        bodyColor: Colors.grey[800]
+                      )
+                    ],),
                   ),
-                ),
-              )
-              
-          ],
+          
+                Form(
+                  key: _formkey,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: Column(
+                      children: [
+                        CustomFormField(
+                            formData: _oldPassword,
+                            formObsecure: true,
+                            formLabelText: "Current Password" ),
+                          
+                        const SizedBox(height: 20),
+                        CustomFormField(
+                          formData: _newPassword,
+                          formObsecure: true,
+                          formLabelText: "New Password" ),
+                        
+                        const SizedBox(height: 20),
+                        CustomFormField(
+                          formData: _confirmPassword,
+                          formObsecure: true,
+                          formLabelText: "Confirm New Password" ),
+                        
+                        const SizedBox(height: 20),
+                    
+                        Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: CustomButton(
+                              btnColor: Theme.of(context).colorScheme.primary,
+                              btnOnTap: () {},
+                              btnChild: Text("Save Changes",
+                                  style: GoogleFonts.lato(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Theme.of(context).colorScheme.background)),
+                          )),
+                      ],
+                    ),
+                  ),
+                )
+                
+            ],
+          ),
         ),
       )
     );
