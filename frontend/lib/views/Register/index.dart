@@ -1,4 +1,6 @@
 import "package:flutter/material.dart";
+import "package:frontend/core/providers/user_provider.dart";
+import "package:frontend/models/user_model.dart";
 import "package:frontend/views/Login/index.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
@@ -6,6 +8,7 @@ import "package:frontend/widgets/CustomFormField.dart";
 import "package:frontend/widgets/CustomButton.dart";
 import "package:frontend/core/utils/FormValidator.dart";
 import "package:frontend/viewmodels/auth_viewmodel.dart";
+import "package:provider/provider.dart";
 
 class RegisterView extends StatefulWidget {
   static String id = "/register";
@@ -17,6 +20,7 @@ class RegisterView extends StatefulWidget {
 }
 
 class RegisterViewState extends State<RegisterView> {
+
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
   late TextEditingController _userName;
   late TextEditingController _email;
@@ -44,6 +48,8 @@ class RegisterViewState extends State<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+
     return Scaffold(
         body: SingleChildScrollView(
             child: Column(
@@ -106,11 +112,7 @@ class RegisterViewState extends State<RegisterView> {
                       btnColor: Theme.of(context).colorScheme.primary,
                       btnOnTap: () {
                         if (_form.currentState!.validate()) {
-                          AuthViewModel().signUpWithEmail(
-                              _email.text.trim(), _password.text.trim());
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/dashboard', (Route<dynamic> route) => false);
-
+                          _signUpPageEmailAndPasswordAuth(userProvider);
                           setState(() {
                             _gap = 645;
                           });
@@ -147,5 +149,23 @@ class RegisterViewState extends State<RegisterView> {
             ))
       ],
     )));
+  }
+
+  Future<void> _signUpPageEmailAndPasswordAuth(UserProvider userProvider) async {
+    await AuthViewModel().signUpWithEmail(
+        _email.text.trim(), _password.text.trim());
+
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        '/dashboard', (Route<dynamic> route) => false);
+        
+    await Future.delayed(const Duration(seconds: 2)); 
+    await userProvider.addUserCredential(
+      UserModel(
+        uid: AuthViewModel().getUserUID,
+        email: AuthViewModel().getUserEmail,
+        displayName: AuthViewModel().getUserDisplayName,
+        photoUrl: AuthViewModel().getUserPhotoUrl,
+      ).toMap()
+    );
   }
 }
