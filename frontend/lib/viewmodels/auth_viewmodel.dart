@@ -1,4 +1,5 @@
 import "package:firebase_auth/firebase_auth.dart";
+import "package:frontend/viewmodels/storage_viewmodel.dart";
 import "package:google_sign_in/google_sign_in.dart";
 
 class AuthViewModel {
@@ -14,6 +15,30 @@ class AuthViewModel {
 
     await _auth.signInWithCredential(credential);
     return;
+  }
+
+  Future<bool> signInWithEmail(String email, String password) async {
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      return true;
+    } on FirebaseAuthException catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> signUpWithEmail(String email, String password) async {
+    try {
+      String? image = await StorageViewModel().getImage("Avatar.png");
+      UserCredential credential = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+
+      credential.user?.updateDisplayName(email.split("@")[0]);
+      credential.user?.updatePhotoURL(image);
+
+      return true;
+    } on FirebaseAuthException catch (_) {
+      return false;
+    }
   }
 
   void signOutGoogle() async {

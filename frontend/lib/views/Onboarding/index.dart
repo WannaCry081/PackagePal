@@ -1,10 +1,13 @@
 import "package:flutter/material.dart";
+import "package:frontend/views/Login/index.dart";
 import "package:frontend/widgets/CustomButton.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:flutter_svg/flutter_svg.dart";
 import "package:frontend/viewmodels/auth_viewmodel.dart";
 
 class OnboardingView extends StatefulWidget {
+  static String id = "/onboarding";
+
   const OnboardingView({Key? key}) : super(key: key);
 
   @override
@@ -137,7 +140,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                   const SizedBox(height: 5),
                   GestureDetector(
                       onTap: () =>
-                          Navigator.of(context).pushNamed("/auth/login"),
+                          Navigator.of(context).pushNamed(LoginView.id),
                       child: Text("Continue with Email Instead",
                           style: GoogleFonts.lato(
                               fontSize: 14,

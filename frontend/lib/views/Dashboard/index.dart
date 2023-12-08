@@ -10,6 +10,8 @@ import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:frontend/core/providers/user_provider.dart";
 
 class DashboardView extends StatelessWidget {
+  static String id = "/dashboard";
+
   DashboardView({Key? key}) : super(key: key);
 
   final PersistentTabController _controller = PersistentTabController(initialIndex: 0);

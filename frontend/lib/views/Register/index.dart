@@ -1,22 +1,28 @@
 import "package:flutter/material.dart";
+import "package:frontend/views/Login/index.dart";
+import "package:google_fonts/google_fonts.dart";
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:frontend/widgets/CustomFormField.dart";
-import "package:google_fonts/google_fonts.dart";
 import "package:frontend/widgets/CustomButton.dart";
+import "package:frontend/core/utils/FormValidator.dart";
+import "package:frontend/viewmodels/auth_viewmodel.dart";
 
 class RegisterView extends StatefulWidget {
-  const RegisterView({super.key});
+  static String id = "/register";
+
+  const RegisterView({Key? key}) : super(key: key);
 
   @override
   State<RegisterView> createState() => RegisterViewState();
 }
 
 class RegisterViewState extends State<RegisterView> {
-  final GlobalKey<FormState> form = GlobalKey<FormState>();
+  final GlobalKey<FormState> _form = GlobalKey<FormState>();
   late TextEditingController _userName;
   late TextEditingController _email;
   late TextEditingController _confirmPassword;
   late TextEditingController _password;
+  int _gap = 645;
 
   @override
   void initState() {
@@ -69,35 +75,51 @@ class RegisterViewState extends State<RegisterView> {
         ),
         const SizedBox(height: 20),
         Form(
-            key: form,
+            key: _form,
             child: Column(
               children: [
                 const SizedBox(height: 20),
                 CustomFormField(
-                  formData: _userName,
-                  formLabelText: "Username",
-                ),
-                const SizedBox(height: 20),
-                CustomFormField(
                   formData: _email,
                   formLabelText: "Email Address",
+                  formValidator: FormValidator().validateEmail,
                 ),
                 const SizedBox(height: 20),
                 CustomFormField(
-                    formData: _password,
-                    formLabelText: "Password",
-                    formObsecure: true),
+                  formData: _password,
+                  formLabelText: "Password",
+                  formObsecure: true,
+                  formValidator: FormValidator().validatePassword,
+                ),
                 const SizedBox(height: 20),
                 CustomFormField(
-                    formData: _confirmPassword,
-                    formLabelText: "Confirm Password",
-                    formObsecure: true),
+                  formData: _confirmPassword,
+                  formLabelText: "Confirm Password",
+                  formObsecure: true,
+                  formValidator: (value) => FormValidator()
+                      .validateConfirmPassword(value, _password.text),
+                ),
                 const SizedBox(height: 20),
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: CustomButton(
                       btnColor: Theme.of(context).colorScheme.primary,
-                      btnOnTap: () {},
+                      btnOnTap: () {
+                        if (_form.currentState!.validate()) {
+                          AuthViewModel().signUpWithEmail(
+                              _email.text.trim(), _password.text.trim());
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/dashboard', (Route<dynamic> route) => false);
+
+                          setState(() {
+                            _gap = 645;
+                          });
+                        } else {
+                          setState(() {
+                            _gap = 715;
+                          });
+                        }
+                      },
                       btnChild: Text("Submit",
                           style: GoogleFonts.lato(
                               fontSize: 16,
@@ -105,7 +127,7 @@ class RegisterViewState extends State<RegisterView> {
                               color: Theme.of(context).colorScheme.background)),
                     )),
                 const SizedBox(height: 20),
-                SizedBox(height: MediaQuery.of(context).size.height - 700),
+                SizedBox(height: MediaQuery.of(context).size.height - _gap),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -113,7 +135,7 @@ class RegisterViewState extends State<RegisterView> {
                         style: GoogleFonts.lato(fontSize: 14)),
                     GestureDetector(
                         onTap: () => Navigator.of(context)
-                            .pushReplacementNamed("/auth/login"),
+                            .pushReplacementNamed(LoginView.id),
                         child: Text("Sign in",
                             style: GoogleFonts.lato(
                                 fontSize: 14,
