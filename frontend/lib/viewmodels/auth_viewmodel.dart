@@ -45,4 +45,10 @@ class AuthViewModel {
     await _signIn.signOut();
     await _auth.signOut();
   }
+
+
+  String get getUserDisplayName => _auth.currentUser?.displayName ?? "";
+  String get getUserEmail => _auth.currentUser?.email ?? "";
+  String get getUserPhotoUrl => _auth.currentUser?.photoURL ?? "";
+  String get getUserUID => _auth.currentUser!.uid;
 }
