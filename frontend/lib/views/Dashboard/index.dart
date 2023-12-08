@@ -1,13 +1,10 @@
 import "package:frontend/views/Settings/index.dart";
-import "package:provider/provider.dart";
 import "package:flutter/material.dart";
 import "package:frontend/views/CreateOrder/index.dart";
 import "package:frontend/views/Home/index.dart";
 import "package:frontend/views/OrdersList/index.dart";
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
-
-import "package:frontend/core/providers/user_provider.dart";
 
 class DashboardView extends StatelessWidget {
   static String id = "/dashboard";
@@ -18,8 +15,6 @@ class DashboardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
-    final data = userProvider.getUserData();
 
     return Scaffold(
       floatingActionButton: Padding(
