@@ -2,17 +2,22 @@ import "package:flutter/material.dart";
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:frontend/core/constants/text_theme.dart";
 import "package:frontend/viewmodels/auth_viewmodel.dart";
+import "package:frontend/viewmodels/database_viewmodel.dart";
 
 class OrderView extends StatelessWidget {
-   final Map<String, dynamic> orderData;
+  final Map<String, dynamic> orderData;
+  final int index;
 
   const OrderView({
     Key? key,
-    required this.orderData
+    required this.orderData,
+    required this.index,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final db = DatabaseViewModel();
+
     final name = orderData['name'] as String;
     final pin = orderData['pin'] as String;
     final weight = orderData['weight'] as String;
@@ -21,8 +26,6 @@ class OrderView extends StatelessWidget {
     final deliveryName = orderData['deliveryName'] as String;
     final deliveryContact = orderData['deliveryContact'] as String;
     final deliveryDate = orderData['deliveryDate'] as String;
-
-
 
     return Scaffold(
       body: SafeArea(
@@ -48,6 +51,9 @@ class OrderView extends StatelessWidget {
 
                   const Spacer(),
                   GestureDetector(
+                    onTap: () async{
+                      
+                    },
                     child: Container(
                       margin: const EdgeInsets.only(right: 8),
                       height: 40,
@@ -65,6 +71,13 @@ class OrderView extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
+                    onTap: () async {
+                      await db.deleteOrder(index);
+
+                      await Future.delayed(const Duration(seconds: 1));
+                      Navigator.of(context).pop();
+
+                    },
                     child: Container(
                         height: 40,
                         width: 40,
