@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:frontend/core/constants/text_theme.dart";
+import "package:frontend/viewmodels/auth_viewmodel.dart";
 
 class OrderView extends StatelessWidget {
    final Map<String, dynamic> orderData;
@@ -27,27 +28,65 @@ class OrderView extends StatelessWidget {
       body: SafeArea(
         child: ListView(
           children: [
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 10.0),
-                  child: IconButton(
-                    icon: const Icon(FeatherIcons.arrowLeft),
-                     onPressed: () => Navigator.of(context).pop()
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: const Icon(FeatherIcons.arrowLeft)
+                    ),
                   ),
-                ),
-                titleText(
-                  "Order Details",
-                  titleSize: 20.0,
-                  titleWeight: FontWeight.bold,
-                  titleColor: Colors.grey[700]
-                )
-              ],
+                  titleText(
+                    "Order Details",
+                    titleSize: 20.0,
+                    titleWeight: FontWeight.bold,
+                    titleColor: Colors.grey[700]
+                  ),
+
+                  const Spacer(),
+                  GestureDetector(
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 8),
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondary.withAlpha(40),
+                        shape: BoxShape.circle
+                      ),
+                      child: Icon(
+                        FeatherIcons.edit,
+                        color: Theme.of(context).colorScheme.secondary,
+                        size: 20.0,
+                        weight: 5.0,
+                      )
+                    ),
+                  ),
+                  GestureDetector(
+                    child: Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.red[50],
+                          shape: BoxShape.circle
+                        ),
+                        child: Icon(
+                          FeatherIcons.trash,
+                          color: Colors.red[500],
+                          size: 20.0,
+                          weight: 5.0,
+                        )
+                    ),
+                  ),
+                ],
+              ),
             ),
         
             // Package Information
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
               child: Container(
                 height: 300,
                 width: MediaQuery.of(context).size.width,
@@ -95,7 +134,7 @@ class OrderView extends StatelessWidget {
                             Divider(color: Colors.grey[200]),
                             const SizedBox(height: 10.0),
                             itemDetail(context, "Item ID","dk30c3nd", "Product PIN", pin),
-                            itemDetail(context, "Price","Php $price", "Weight", weight),
+                            itemDetail(context, "Price","Php $price", "Weight", "$weight kg"),
                           ],
                         ),
                       ),
@@ -109,7 +148,7 @@ class OrderView extends StatelessWidget {
         
             // Courier Information
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal:16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
@@ -136,6 +175,10 @@ class OrderView extends StatelessWidget {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Theme.of(context).colorScheme.tertiary,
+                        ),
+                        child:  CircleAvatar(
+                          backgroundImage: NetworkImage(AuthViewModel().getUserPhotoUrl),
+                          radius: 25,
                         ),
                       ),
                       Column(
@@ -202,7 +245,7 @@ class OrderView extends StatelessWidget {
             const SizedBox(height: 20.0),
         
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Container(
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
