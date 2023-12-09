@@ -50,6 +50,8 @@ dependencies:
   persistent_bottom_nav_bar_v2: any
   firebase_storage: ^11.5.4
   cloud_firestore: ^4.13.5
+  intl: ^0.17.0
+
 
 dev_dependencies:
   flutter_test:
