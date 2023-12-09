@@ -7,6 +7,7 @@ class OrderModel {
   String? status;
   String? deliveryName;
   String? deliveryContact;
+  String? deliveryDate;
 
   OrderModel(
     {
@@ -16,7 +17,8 @@ class OrderModel {
       required this.price,
       required this.status,
       required this.deliveryName,
-      required this.deliveryContact});
+      required this.deliveryContact,
+      required this.deliveryDate});
 
   Map<String, dynamic> toMap() {
     return {
@@ -27,6 +29,7 @@ class OrderModel {
       "status" : status,
       "deliveryName" : deliveryName,
       "deliveryContact" : deliveryContact,
+      "deliveryDate" : deliveryDate
     };
   }
 
@@ -39,6 +42,7 @@ class OrderModel {
       status: data["status"],
       deliveryName: data["deliveryName"],
       deliveryContact: data["deliveryContact"],
+      deliveryDate: data["deliverDate"]
     );
   }
 }
