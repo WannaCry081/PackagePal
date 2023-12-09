@@ -3,10 +3,26 @@ import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:frontend/core/constants/text_theme.dart";
 
 class OrderView extends StatelessWidget {
-  const OrderView({super.key});
+   final Map<String, dynamic> orderData;
+
+  const OrderView({
+    Key? key,
+    required this.orderData
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final name = orderData['name'] as String;
+    final pin = orderData['pin'] as String;
+    final weight = orderData['weight'] as String;
+    final price = orderData['price'] as String;
+    final status = orderData['status'] as String;
+    final deliveryName = orderData['deliveryName'] as String;
+    final deliveryContact = orderData['deliveryContact'] as String;
+    final deliveryDate = orderData['deliveryDate'] as String;
+
+
+
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -70,7 +86,7 @@ class OrderView extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             titleText(
-                              "LAFVIN ESP32 Basic Starter Kit",
+                              name,
                               titleSize: 20.0,
                               titleWeight: FontWeight.w600,
                               titleAlignment: TextAlign.right,
@@ -78,8 +94,8 @@ class OrderView extends StatelessWidget {
                             ),
                             Divider(color: Colors.grey[200]),
                             const SizedBox(height: 10.0),
-                            itemDetail(context, "Item ID","dk30c3nd", "Product PIN", "12345678"),
-                            itemDetail(context, "Price","Php 1500", "Weight", "0.8 kg"),
+                            itemDetail(context, "Item ID","dk30c3nd", "Product PIN", pin),
+                            itemDetail(context, "Price","Php $price", "Weight", weight),
                           ],
                         ),
                       ),
@@ -126,7 +142,7 @@ class OrderView extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           titleText(
-                            "Juan Dela Cruz",
+                            deliveryName,
                             titleWeight: FontWeight.bold,
                             titleSize: 20.0,
                             titleColor: Colors.grey[800]
@@ -157,7 +173,7 @@ class OrderView extends StatelessWidget {
                           ),
                           const SizedBox(width: 10),
                           bodyText(
-                            "09254747461",
+                            deliveryContact,
                             bodySize: 18.0,
                             bodyColor: Colors.grey[800],
                             bodyWeight: FontWeight.w600
@@ -203,7 +219,7 @@ class OrderView extends StatelessWidget {
                           bodySize: 16.0
                         ),
                         bodyText(
-                          "December 15, 2023",
+                          deliveryDate,
                           bodySize: 18.0,
                           bodyColor: Theme.of(context).colorScheme.secondary,
                           bodyWeight: FontWeight.w600
@@ -226,7 +242,7 @@ class OrderView extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.all(6.0),
                             child: bodyText(
-                              "Processing",
+                              status,
                               bodySize: 13,
                               bodyColor: Colors.white,
                               bodyWeight: FontWeight.bold
