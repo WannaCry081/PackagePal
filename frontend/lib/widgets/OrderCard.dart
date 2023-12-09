@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:frontend/core/constants/text_theme.dart";
+import "package:frontend/viewmodels/auth_viewmodel.dart";
 
 class OrderCard extends StatelessWidget {
 
@@ -28,15 +29,10 @@ class OrderCard extends StatelessWidget {
        ),
        child: Row(
          children: [
-           Container(
-             margin: const EdgeInsets.only(left: 8),
-             height: 45,
-             width: 45,
-             decoration: BoxDecoration(
-               color: Theme.of(context).colorScheme.secondary,
-               shape: BoxShape.circle
-             ),
-           ),
+            CircleAvatar(
+              backgroundImage: NetworkImage(AuthViewModel().getUserPhotoUrl),
+              radius: 23,
+            ),
            const SizedBox(width: 8.0),
            Column(
              mainAxisAlignment: MainAxisAlignment.center,
