@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:frontend/core/constants/text_theme.dart";
 import "package:frontend/core/providers/order_provider.dart";
+import "package:frontend/core/utils/FormValidator.dart";
 import "package:frontend/models/order_model.dart";
 import "package:frontend/widgets/CustomButton.dart";
 import "package:frontend/widgets/CustomFormField.dart";
@@ -153,7 +154,8 @@ class _CreateOrderViewState extends State<CreateOrderView> {
             
                           CustomFormField(
                             formData: _packageName,
-                            formLabelText: "Name" ),
+                            formLabelText: "Name",
+                            formValidator: (value) => FormValidator().validateInput(value, "Name", 2, 30),),
                           
                           const SizedBox(height: 10),
             
@@ -162,6 +164,7 @@ class _CreateOrderViewState extends State<CreateOrderView> {
                               Expanded(
                                 child: CustomFormField(
                                   formData: _price,
+                                  formValidator: (value) => FormValidator().validateWeightPriceInput(value, "Price", 2),
                                   formLabelText: "Price"),
                               ),
                               Container(
@@ -192,6 +195,7 @@ class _CreateOrderViewState extends State<CreateOrderView> {
                                 child: CustomFormField(
                                   formData: _weight,
                                   formLabelText: "Weight",
+                                  formValidator: (value) => FormValidator().validateWeightPriceInput(value, "Weight", 2),
                                 ),
                               ),
                               Container(
@@ -218,7 +222,8 @@ class _CreateOrderViewState extends State<CreateOrderView> {
 
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: TextField(
+                            child: TextFormField(
+                              validator: (value) => FormValidator().validateInput(value, "Date", 2, 10),
                               controller: _deliveryDate,
                               readOnly: true,
                               decoration: InputDecoration(
@@ -295,6 +300,7 @@ class _CreateOrderViewState extends State<CreateOrderView> {
                               Expanded(
                                 child: CustomFormField(
                                   formData: _pin,
+                                  formValidator: (value) => FormValidator().validateInput(value, "Pin", 8, 8),
                                   formLabelText: "PIN Code"),
                               ),
                               GestureDetector(
@@ -355,12 +361,14 @@ class _CreateOrderViewState extends State<CreateOrderView> {
             
                           CustomFormField(
                             formData: _deliveryName,
+                            formValidator: (value) => FormValidator().validateInput(value, "Name", 2, 30),
                             formLabelText: "Name" ),
                           
                           const SizedBox(height: 10),
             
                           CustomFormField(
                             formData: _deliveryContact,
+                            formValidator: (value) => FormValidator().validateDigits(value, "Contact number", 11),
                             formLabelText: "Contact Number" ),                  
                         ],
                       )
@@ -375,7 +383,9 @@ class _CreateOrderViewState extends State<CreateOrderView> {
                   child: CustomButton(
                     btnColor: Theme.of(context).colorScheme.primary,
                     btnOnTap: () {
+                      if ( _form.currentState!.validate()){
                       _createOrder(orderProvider);
+                      }
                     },
                     btnChild: Text("Submit Order",
                         style: GoogleFonts.lato(
