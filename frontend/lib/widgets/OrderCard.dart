@@ -4,12 +4,14 @@ import "package:frontend/core/constants/text_theme.dart";
 class OrderCard extends StatelessWidget {
 
   final void Function() ? orderCardOpenContents;
+  final String packageName;
   final String status;
 
   const OrderCard({
     Key ? key,
     this.orderCardOpenContents,
-    this.status = "",
+    required this.packageName,
+    required this.status,
   }) : super(key : key);
 
   @override
@@ -41,7 +43,7 @@ class OrderCard extends StatelessWidget {
              crossAxisAlignment: CrossAxisAlignment.start,
              children: [
                titleText(
-                 "Arduino Uno Kit",
+                 packageName,
                  titleSize: 16.0,
                  titleColor: Colors.grey[800],
                  titleWeight: FontWeight.bold,
