@@ -43,14 +43,13 @@ class _SettingsViewState extends State<SettingsView> {
                 ),
                 const SizedBox(height: 20.0),
                 titleText(
-                  //data['displayName'],
-                  "Shiela Mae Q. Lepon",
+                  data?['displayName'] ?? "",
                   titleSize: 24.0,
                   titleWeight: FontWeight.bold
                 ),
                 const SizedBox(height: 5.0),
                 bodyText(
-                  "shielamae02",
+                  data?['email'] ?? "",
                   bodySize: 18.0,
                   bodyWeight: FontWeight.normal,
                   bodyColor: Colors.grey[800]
