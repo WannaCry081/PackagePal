@@ -1,10 +1,13 @@
+import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:frontend/core/constants/text_theme.dart";
+import "package:frontend/models/order_model.dart";
 import "package:frontend/viewmodels/auth_viewmodel.dart";
 import "package:frontend/viewmodels/database_viewmodel.dart";
+import "package:frontend/views/CreateOrder/index.dart";
 
-class OrderView extends StatelessWidget {
+class OrderView extends StatefulWidget {
   final Map<String, dynamic> orderData;
   final int index;
 
@@ -15,17 +18,31 @@ class OrderView extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<OrderView> createState() => _OrderViewState();
+}
+
+class _OrderViewState extends State<OrderView> {
+  late OrderModel orderModel;
+
+  @override
+  void initState() {
+    super.initState();
+    orderModel = OrderModel.fromMap(widget.orderData);
+  }
+
+  
+  @override
   Widget build(BuildContext context) {
     final db = DatabaseViewModel();
 
-    final name = orderData['name'] as String;
-    final pin = orderData['pin'] as String;
-    final weight = orderData['weight'] as String;
-    final price = orderData['price'] as String;
-    final status = orderData['status'] as String;
-    final deliveryName = orderData['deliveryName'] as String;
-    final deliveryContact = orderData['deliveryContact'] as String;
-    final deliveryDate = orderData['deliveryDate'] as String;
+    final name = widget.orderData['name'] as String;
+    final pin = widget.orderData['pin'] as String;
+    final weight = widget.orderData['weight'] as String;
+    final price = widget.orderData['price'] as String;
+    final status = widget.orderData['status'] as String;
+    final deliveryName = widget.orderData['deliveryName'] as String;
+    final deliveryContact = widget.orderData['deliveryContact'] as String;
+    final deliveryDate = widget.orderData['deliveryDate'] as String;
 
     return Scaffold(
       body: SafeArea(
@@ -51,8 +68,13 @@ class OrderView extends StatelessWidget {
 
                   const Spacer(),
                   GestureDetector(
-                    onTap: () async{
-                      
+                    onTap: () async {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => CreateOrderView(
+                          index: widget.index, initialOrder: orderModel, isEditMode: true,))
+                      );
+                      await Future.delayed(const Duration(seconds: 1));
+                      Navigator.of(context).pop();
                     },
                     child: Container(
                       margin: const EdgeInsets.only(right: 8),
@@ -72,7 +94,7 @@ class OrderView extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      await db.deleteOrder(index);
+                      await db.deleteOrder(widget.index);
 
                       await Future.delayed(const Duration(seconds: 1));
                       Navigator.of(context).pop();
@@ -387,5 +409,4 @@ class OrderView extends StatelessWidget {
       ],
     ),
   );
-
 }
