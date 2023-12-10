@@ -3,6 +3,8 @@ import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:flutter_svg/flutter_svg.dart";
 import "package:frontend/core/constants/text_theme.dart";
 import "package:frontend/core/providers/user_provider.dart";
+import "package:frontend/viewmodels/auth_viewmodel.dart";
+import "package:frontend/viewmodels/database_viewmodel.dart";
 import "package:frontend/views/OrderView/index.dart";
 import "package:frontend/widgets/OrderCard.dart";
 import "package:google_fonts/google_fonts.dart";
@@ -14,6 +16,7 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    final db = DatabaseViewModel();
     final userProvider = Provider.of<UserProvider>(context);
     final data = userProvider.getUserData();
 
@@ -26,11 +29,12 @@ class HomeView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
+                padding: const EdgeInsets.all(20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    bodyText("Welcome back, Shiela!",
+                    bodyText(
+                      "",
                     bodySize: 16.0,
                     bodyColor: Colors.white),
                     const Spacer(),
@@ -151,15 +155,56 @@ class HomeView extends StatelessWidget {
                       )
                     ),
                     const SizedBox(height: 10.0),
-                    OrderCard(
-                      status: "On Process",
-                      orderCardOpenContents: () => {
-                        Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const OrderView()
-                              )
-                            )
-                      },
+                    StreamBuilder(
+                      stream: db.getOrdersOnToday(), 
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text('Error: ${snapshot.error}'),
+                        );
+                      } else if (!snapshot.hasData || snapshot.data == null) {
+                        return const Center(
+                          child: Text('No data available'),
+                        );
+                      }
+                      
+                       List<Map<String, dynamic>> orders = snapshot.data!.cast<Map<String, dynamic>>();
+
+                       return SizedBox(
+                        height: 80,
+                         child: ListView.builder(
+                          itemCount: 1,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index){
+                            final order = orders[index];
+                         
+                            final packageName = order['name'] as String;
+                            final status = order['status'] as String;
+                            final deliveryDate = order['deliveryDate'] as String;
+                         
+                            return Container(
+                              width: MediaQuery.of(context).size.width - 40,
+                              child: OrderCard(
+                                packageName: packageName, 
+                                status: status,
+                                deliveryDate: deliveryDate,
+                                orderCardOpenContents: () => {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => OrderView(
+                                        orderData: order, index: index)
+                                    )
+                                  )
+                                },
+                              ),
+                            );
+                          }),
+                       );
+                      }
                     )
                   ] 
                 )
@@ -170,63 +215,4 @@ class HomeView extends StatelessWidget {
       )
     );
   }
-
-
-  Widget PackageCard (context,) => Container(
-    height: 75,
-    width: MediaQuery.of(context).size.width,
-    padding: const EdgeInsets.all(8),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(10.0),
-      border: Border.all(color: Colors.grey.shade300)
-    ),
-    child: Row(
-      children: [
-        Container(
-          margin: const EdgeInsets.only(left: 8),
-          height: 40,
-          width: 40,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.secondary,
-            shape: BoxShape.circle
-          ),
-        ),
-        const SizedBox(width: 8.0),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            titleText(
-              "Arduino Uno Kit",
-              titleSize: 16.0,
-              titleWeight: FontWeight.bold,
-              titleOverflow: TextOverflow.ellipsis
-            ),
-            bodyText(
-              "#djc20c8n3",
-              bodySize: 13.0,
-              bodyColor: Colors.grey[800],
-              bodyOverflow: TextOverflow.ellipsis
-            )
-          ],
-        ),
-        const Spacer(),
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary,
-            borderRadius: BorderRadius.circular(7.0)
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(6.0),
-            child: bodyText(
-              "On Process",
-              bodySize: 13,
-              bodyColor: Colors.white
-            ),
-          ),
-        )
-      ]
-    )
-  );
 }
