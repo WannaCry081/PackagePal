@@ -30,7 +30,4 @@ class OrderProvider extends ChangeNotifier {
     // fetchOrders();
     return;
   }
-
-  
-
 }
