@@ -51,7 +51,7 @@ class RegisterViewState extends State<RegisterView> {
     final userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
-        body: SingleChildScrollView(
+      body: SingleChildScrollView(
             child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -165,6 +165,8 @@ class RegisterViewState extends State<RegisterView> {
         email: AuthViewModel().getUserEmail,
         displayName: AuthViewModel().getUserDisplayName,
         photoUrl: AuthViewModel().getUserPhotoUrl,
+        address: "",
+        contactNumber: ""
       ).toMap()
     );
   }
