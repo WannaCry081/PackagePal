@@ -1,9 +1,16 @@
+import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:frontend/core/constants/text_theme.dart";
+import "package:frontend/core/providers/user_provider.dart";
+import "package:frontend/core/utils/FormValidator.dart";
+import "package:frontend/models/user_model.dart";
+import "package:frontend/viewmodels/auth_viewmodel.dart";
+import "package:frontend/viewmodels/database_viewmodel.dart";
 import "package:frontend/widgets/CustomButton.dart";
 import "package:frontend/widgets/CustomFormField.dart";
 import "package:google_fonts/google_fonts.dart";
+import "package:provider/provider.dart";
 
 class EditDeliveryInfo extends StatefulWidget {
   const EditDeliveryInfo({super.key});
@@ -13,6 +20,7 @@ class EditDeliveryInfo extends StatefulWidget {
 }
 
 class _EditDeliveryInfoState extends State<EditDeliveryInfo> {
+  
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   late TextEditingController _contactNumber;
   late TextEditingController _address;
@@ -33,6 +41,8 @@ class _EditDeliveryInfoState extends State<EditDeliveryInfo> {
 
   @override
   Widget build(BuildContext context) {
+    final db = DatabaseViewModel();
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -90,25 +100,47 @@ class _EditDeliveryInfoState extends State<EditDeliveryInfo> {
                               const SizedBox(width: 15),
                         
                               Flexible(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    titleText("Shiela Mae Lepon",
-                                        titleWeight: FontWeight.bold,
-                                        titleColor: Theme.of(context).colorScheme.primary,
-                                        titleSize: 20),
-                                    const SizedBox(height: 2),
-                                    bodyText("09254747461",
-                                        bodyWeight: FontWeight.w400,
-                                        bodyColor: Colors.grey[700],
-                                        bodySize: 14),
-                                    const SizedBox(height: 2),
-                                    bodyText("Bulacao Pardo, Cebu City, Bulacao, Bulacao",
-                                        bodyWeight: FontWeight.w400,
-                                        bodyColor: Colors.grey[700],
-                                        bodySize: 14),
-                                    const SizedBox(height: 2),
-                                  ],
+                                child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                                  stream: db.getUserCredential(),
+                                  builder: (context, snapshot) {
+
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return const Center(
+                                        child: SizedBox(
+                                          height: 50, width: 50,
+                                          child: CircularProgressIndicator()),
+                                      ); 
+                                    } else if (snapshot.hasError) {
+                                      return Center(child: titleText('Error loading data')); // Handle error
+                                    } else {
+                                      Map<String, dynamic> userData = snapshot.data!.data() ?? {};
+
+                                      return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        titleText(
+                                            userData['displayName'] ?? '',
+                                            titleWeight: FontWeight.bold,
+                                            titleColor: Theme.of(context).colorScheme.primary,
+                                            titleSize: 20),
+                                        const SizedBox(height: 2),
+                                        bodyText(
+                                            userData['contactNumber'] ?? "Contact Number",
+                                            bodyWeight: FontWeight.w400,
+                                            bodyColor: Colors.grey[700],
+                                            bodySize: 14),
+                                        const SizedBox(height: 2),
+                                        bodyText(
+                                            userData['address'] ?? "Address",
+                                            bodyWeight: FontWeight.w400,
+                                            bodyColor: Colors.grey[700],
+                                            bodySize: 14),
+                                        const SizedBox(height: 2),
+                                      ],
+                                    );
+                                    }
+                                    
+                                  }
                                 ),
                               ),
                             ],
@@ -129,12 +161,14 @@ class _EditDeliveryInfoState extends State<EditDeliveryInfo> {
                       
                       CustomFormField(
                         formData: _contactNumber,
+                        formValidator: (value) => FormValidator().validateDigits(value, "Contact number", 11),
                         formLabelText: "Contact Number" ),
                       
                       const SizedBox(height: 20),
                 
                       CustomFormField(
                         formData: _address,
+                        formValidator: (value) => FormValidator().validateInput(value, "Address", 2, 50),
                         formLabelText: "Address" ),
                       
                       const SizedBox(height: 20),
@@ -143,12 +177,27 @@ class _EditDeliveryInfoState extends State<EditDeliveryInfo> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: CustomButton(
                           btnColor: Theme.of(context).colorScheme.primary,
-                          btnOnTap: () {},
+                          btnOnTap: () async {
+                            if(_formkey.currentState!.validate()){
+                              await db.updateUserCredential(
+                              UserModel(
+                                uid: AuthViewModel().getUserUID,
+                                  email: AuthViewModel().getUserEmail,
+                                  displayName: AuthViewModel().getUserDisplayName,
+                                  photoUrl: AuthViewModel().getUserPhotoUrl,
+                                  address: _address.text.trim(),
+                                  contactNumber: _contactNumber.text.trim()
+                                ).toMap());
+
+                                await Future.delayed(const Duration(seconds: 1));
+                                Navigator.of(context).pop();
+                            }
+                          },
                           btnChild: Text("Save Changes",
                               style: GoogleFonts.lato(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Theme.of(context).colorScheme.background)),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).colorScheme.background)),
                       )),
                     ],
                   ),
