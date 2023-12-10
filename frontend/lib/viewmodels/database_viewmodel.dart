@@ -9,9 +9,9 @@ class DatabaseViewModel {
   final String _email = AuthViewModel().getUserEmail;
 
   // User 
-  Future<DocumentSnapshot<Map<String, dynamic>>> getUserCredential() async {
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getUserCredential() {
     final collection = _firestore.collection(_userUid).doc("$_userUid+$_email");
-    return await collection.get();
+    return collection.snapshots();
   }
 
   Future<void> addUserCredential(Map<String, dynamic> data) async {
@@ -24,6 +24,45 @@ class DatabaseViewModel {
     });
     return;
   }
+
+  Future<void> updateUserCredential(Map<String, dynamic> updates) async {
+    final userInformationCollection = _firestore.collection(_userUid).doc("$_userUid+$_email");
+
+    final snapshot = await userInformationCollection.get();
+    if (!snapshot.exists) {
+      return;
+    }
+
+    final userData = snapshot.data() as Map<String, dynamic>;
+    if (userData.isEmpty) {
+      return;
+    }
+
+    updates.forEach((key, value) {
+      userData[key] = value;
+    });
+
+    await userInformationCollection.set(userData);
+  }
+
+  Future<void> updateDisplayName(String displayName) async {
+    final userInformationCollection = _firestore.collection(_userUid).doc("$_userUid+$_email");
+
+    final snapshot = await userInformationCollection.get();
+    if (!snapshot.exists) {
+      return;
+    }
+
+    final userData = snapshot.data() as Map<String, dynamic>;
+    if (userData.isEmpty) {
+      return;
+    }
+
+    userData['displayName'] = displayName;
+
+    await userInformationCollection.set(userData);
+  }
+
 
 
 
@@ -144,6 +183,66 @@ class DatabaseViewModel {
       "Orders": ordersList,
     });
   }
+
+  Stream<List<dynamic>> getOrdersOnToday() {
+    final orderCollection = _firestore.collection(_userUid).doc("$_userUid+Orders");
+
+    return orderCollection.snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        final data = snapshot.data() as Map<String, dynamic>;
+
+        if (data['Orders'] != null) {
+          final List<dynamic> orderList = data['Orders'];
+
+          final String todayDate = DateTime.now().toLocal().toString().split(' ')[0];
+
+          final List<dynamic> ordersOnToday = orderList.where((order) {
+            final String deliveryDate = order['deliveryDate']; // Adjust the key based on your data structure
+            return deliveryDate == todayDate;
+          }).toList();
+
+          return ordersOnToday;
+        } else {
+          return [];
+        }
+      } else {
+        return [];
+      }
+    });
+  }
+
+
+  Future<void> updateStatusToCompleted(int index) async {
+    final orderCollection = _firestore.collection(_userUid).doc("$_userUid+Orders");
+
+    final snapshot = await orderCollection.get();
+    if (!snapshot.exists) {
+      return;
+    }
+
+    final orderData = snapshot.data() as Map<String, dynamic>;
+    if (orderData.isEmpty || orderData['Orders'] == null) {
+      return;
+    }
+
+    List<dynamic> ordersList = List.from(orderData['Orders']);
+    if (index < 0 || index >= ordersList.length) {
+      return;
+    }
+
+    Map<String, dynamic> orderToUpdate = Map.from(ordersList[index]);
+    orderToUpdate['status'] = 'Completed'; // Update only the 'status' property
+
+    ordersList[index] = orderToUpdate;
+
+    await orderCollection.set({
+      "Orders": ordersList,
+    });
+  }
+
+
+
+
 
 
 
