@@ -7,12 +7,14 @@ class OrderCard extends StatelessWidget {
   final void Function() ? orderCardOpenContents;
   final String packageName;
   final String status;
+  final String deliveryDate;
 
   const OrderCard({
     Key ? key,
     this.orderCardOpenContents,
     required this.packageName,
     required this.status,
+    required this.deliveryDate,
   }) : super(key : key);
 
   @override
@@ -46,7 +48,7 @@ class OrderCard extends StatelessWidget {
                  titleOverflow: TextOverflow.ellipsis
                ),
                bodyText(
-                 "#djc20c8n3",
+                 deliveryDate,
                  bodySize: 13.0,
                  bodyColor: Colors.grey[800],
                  bodyOverflow: TextOverflow.ellipsis
