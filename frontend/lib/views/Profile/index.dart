@@ -1,12 +1,21 @@
 import "package:flutter/material.dart";
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:frontend/core/constants/text_theme.dart";
+import "package:frontend/core/utils/FormValidator.dart";
+import "package:frontend/models/user_model.dart";
+import "package:frontend/viewmodels/auth_viewmodel.dart";
+import "package:frontend/viewmodels/database_viewmodel.dart";
 import "package:frontend/widgets/CustomButton.dart";
 import "package:frontend/widgets/CustomFormField.dart";
 import "package:google_fonts/google_fonts.dart";
 
 class EditProfileView extends StatefulWidget {
-  const EditProfileView({super.key});
+  final Map<String, dynamic> userData;
+
+  const EditProfileView({
+    Key? key,
+    required this.userData,
+  });
 
   @override
   State<EditProfileView> createState() => _EditProfileViewState();
@@ -31,6 +40,8 @@ class _EditProfileViewState extends State<EditProfileView> {
 
   @override
   Widget build(BuildContext context) {
+    final db = DatabaseViewModel();
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -74,8 +85,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                   fontSize : 14,
                                   color: Colors.grey[600]
                                 ),
-                                // labelText: widget.formLabelText,
-                                hintText: "hello world",
+                                hintText: widget.userData["displayName"],
                                 hintStyle: GoogleFonts.poppins(
                                   fontSize: 16,
                                   color: Colors.grey,
@@ -101,6 +111,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 ),
                 CustomFormField(
                   formData: _displayName,
+                  formValidator: (value) => FormValidator().validateInput(value, "Display Name", 2, 50),
                   formLabelText: "New Display Name" ),
                 
                 const SizedBox(height: 20),
@@ -109,7 +120,14 @@ class _EditProfileViewState extends State<EditProfileView> {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: CustomButton(
                       btnColor: Theme.of(context).colorScheme.primary,
-                      btnOnTap: () {},
+                      btnOnTap: () async {
+                        if(_formKey.currentState!.validate()){
+                          await db.updateDisplayName(_displayName.text.trim());
+
+                          await Future.delayed(const Duration(seconds: 1));
+                          Navigator.of(context).pop();
+                        }
+                      },
                       btnChild: Text("Save Changes",
                           style: GoogleFonts.lato(
                               fontSize: 16,
