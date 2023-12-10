@@ -46,6 +46,24 @@ class AuthViewModel {
     await _auth.signOut();
   }
 
+  Future<void> authenticationChangePassword(
+    String oldPassword,
+    String newPassword
+  ) async {
+
+    final currentUser = _auth.currentUser!;
+
+    final credential = EmailAuthProvider.credential(
+      email : currentUser.email!, 
+      password: oldPassword
+    );
+
+    await currentUser.reauthenticateWithCredential(credential);
+    await currentUser.updatePassword(newPassword);
+
+    return;
+  }
+
 
   String get getUserDisplayName => _auth.currentUser?.displayName ?? "";
   String get getUserEmail => _auth.currentUser?.email ?? "";
