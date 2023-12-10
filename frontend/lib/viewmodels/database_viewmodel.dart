@@ -1,4 +1,5 @@
 import "package:cloud_firestore/cloud_firestore.dart";
+import "package:frontend/models/order_model.dart";
 import "package:frontend/viewmodels/auth_viewmodel.dart";
 
 
@@ -25,6 +26,7 @@ class DatabaseViewModel {
   }
 
 
+
   // Orders
   Future<void> createOrder(List<dynamic> data) async {
   final orderCollection = _firestore.collection(_userUid).doc("$_userUid+Orders");
@@ -47,21 +49,102 @@ class DatabaseViewModel {
   Stream<List<dynamic>> getOrders() {
   final orderCollection = _firestore.collection(_userUid).doc("$_userUid+Orders");
 
-  return orderCollection.snapshots().map((snapshot) {
-    if (snapshot.exists) {
-      final data = snapshot.data() as Map<String, dynamic>;
+    return orderCollection.snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        final data = snapshot.data() as Map<String, dynamic>;
 
-      if (data['Orders'] != null) {
-        final List<dynamic> orderList = data['Orders'];
-        return orderList;
+        if (data['Orders'] != null) {
+          final List<dynamic> orderList = data['Orders'];
+          return orderList;
+        } else {
+          return [];
+        }
       } else {
         return [];
       }
-    } else {
-      return [];
+    });
+  }
+
+  Future<void> deleteOrder(int index) async {
+    final orderCollection = _firestore.collection(_userUid).doc("$_userUid+Orders");
+
+    final snapshot = await orderCollection.get();
+    if (!snapshot.exists) {
+      return;
     }
-  });
-}
+
+    final orderData = snapshot.data() as Map<String, dynamic>;
+    if (orderData.isEmpty || orderData['Orders'] == null) {
+      return;
+    }
+
+    List<dynamic> ordersList = List.from(orderData['Orders']);
+    if (index < 0 || index >= ordersList.length) {
+      return;
+    }
+
+    ordersList.removeAt(index);
+    await orderCollection.set({
+      "Orders": ordersList,
+    });
+    return;
+
+  }
+  
+  Future<void> updateOrderStatus(int index, String newStatus) async {
+    final orderCollection = _firestore.collection(_userUid).doc("$_userUid+Orders");
+
+    final snapshot = await orderCollection.get();
+    if (!snapshot.exists) {
+      return;
+    }
+
+    final orderData = snapshot.data() as Map<String, dynamic>;
+    if (orderData.isEmpty || orderData['Orders'] == null) {
+      return;
+    }
+
+    List<dynamic> ordersList = List.from(orderData['Orders']);
+    if (index < 0 || index >= ordersList.length) {
+      return;
+    }
+
+    // Update only the 'status' property of the specified item
+    ordersList[index]['status'] = newStatus;
+
+    await orderCollection.set({
+      "Orders": ordersList,
+    });
+  }
+
+  Future<void> updateOrder(int index, OrderModel updates) async {
+    final orderCollection = _firestore.collection(_userUid).doc("$_userUid+Orders");
+
+    final snapshot = await orderCollection.get();
+    if (!snapshot.exists) {
+      return;
+    }
+
+    final orderData = snapshot.data() as Map<String, dynamic>;
+    if (orderData.isEmpty || orderData['Orders'] == null) {
+      return;
+    }
+
+    List<dynamic> ordersList = List.from(orderData['Orders']);
+    if (index < 0 || index >= ordersList.length) {
+      return;
+    }
+
+    Map<String, dynamic> orderToUpdate = Map.from(ordersList[index]);
+    orderToUpdate.addAll(updates.toMap()); 
+
+    ordersList[index] = orderToUpdate;
+
+    await orderCollection.set({
+      "Orders": ordersList,
+    });
+  }
+
 
 
 }
