@@ -4,6 +4,7 @@ import "package:frontend/core/constants/text_theme.dart";
 import "package:frontend/core/providers/order_provider.dart";
 import "package:frontend/core/utils/FormValidator.dart";
 import "package:frontend/models/order_model.dart";
+import "package:frontend/viewmodels/database_viewmodel.dart";
 import "package:frontend/widgets/CustomButton.dart";
 import "package:frontend/widgets/CustomFormField.dart";
 import "package:google_fonts/google_fonts.dart";
@@ -13,13 +14,23 @@ import 'dart:math';
 import "package:provider/provider.dart";
 
 class CreateOrderView extends StatefulWidget {
-  const CreateOrderView({super.key});
+  final OrderModel? initialOrder; // Add this line
+  final bool isEditMode;
+  final int index;
+  
+  const CreateOrderView({
+    Key? key,
+    this.initialOrder,
+    this.isEditMode = false,
+    this.index = 0
+  });
 
   @override
   State<CreateOrderView> createState() => _CreateOrderViewState();
 }
 
 class _CreateOrderViewState extends State<CreateOrderView> {
+  final db = DatabaseViewModel();
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
   late TextEditingController _packageName;
   late TextEditingController _pin;
@@ -33,14 +44,14 @@ class _CreateOrderViewState extends State<CreateOrderView> {
   @override
   void initState() {
     super.initState();
-    _packageName = TextEditingController(text: "");
-    _pin = TextEditingController(text: "");
-    _weight = TextEditingController(text: "");
-    _price = TextEditingController(text: "");
-    _deliveryName = TextEditingController(text: "");
-    _deliveryContact = TextEditingController(text: "");
+    _packageName = TextEditingController(text: widget.initialOrder?.name ?? "");
+    _pin = TextEditingController(text: widget.initialOrder?.pin ?? "");
+    _weight = TextEditingController(text: widget.initialOrder?.weight ?? "");
+    _price = TextEditingController(text: widget.initialOrder?.price ?? "");
+    _deliveryName = TextEditingController(text: widget.initialOrder?.deliveryName ?? "");
+    _deliveryContact = TextEditingController(text: widget.initialOrder?.deliveryContact ?? "");
     _status = TextEditingController(text: "On Process");
-    _deliveryDate = TextEditingController(text: "");
+    _deliveryDate = TextEditingController(text: widget.initialOrder?.deliveryDate ?? "");
   }
 
   @override
@@ -69,29 +80,46 @@ class _CreateOrderViewState extends State<CreateOrderView> {
   }
 
   void clearController(){
-    _packageName.clear();
-    _pin.clear();
-    _weight.clear();
-    _price.clear();
-    _deliveryName.clear();
-    _deliveryContact.clear();
-    _status.clear();
-    _deliveryDate.clear();
+    _packageName.text = "";
+    _pin.text = "";
+    _weight.text = "";
+    _price.text = "";
+    _deliveryName.text = "";
+    _deliveryContact.text = "";
+    _status.text = "";
+    _deliveryDate.text = "";
   }
 
   Future<void> _createOrder(OrderProvider orderProvider) async {
-    await orderProvider.createOrder([
-      OrderModel(
-        name: _packageName.text.trim(),
-        pin: _pin.text.trim(),
-        weight: _weight.text.trim(),
-        price: _price.text.trim(),
-        status: _status.text.trim(),
-        deliveryName: _deliveryName.text.trim(),
-        deliveryContact: _deliveryContact.text.trim(),
-        deliveryDate: _deliveryDate.text.trim(),
-      ).toMap(),
-    ]);
+    if (widget.isEditMode) {
+      await db.updateOrder(
+        widget.index,
+        OrderModel(
+          name: _packageName.text.trim(),
+          pin: _pin.text.trim(),
+          weight: _weight.text.trim(),
+          price: _price.text.trim(),
+          status: _status.text.trim(),
+          deliveryName: _deliveryName.text.trim(),
+          deliveryContact: _deliveryContact.text.trim(),
+          deliveryDate: _deliveryDate.text.trim(),
+        )
+  );
+    } else {
+       await orderProvider.createOrder([
+        OrderModel(
+          name: _packageName.text.trim(),
+          pin: _pin.text.trim(),
+          weight: _weight.text.trim(),
+          price: _price.text.trim(),
+          status: _status.text.trim(),
+          deliveryName: _deliveryName.text.trim(),
+          deliveryContact: _deliveryContact.text.trim(),
+          deliveryDate: _deliveryDate.text.trim(),
+        ).toMap(),
+      ]); 
+    }
+    
 
     clearController();
   }
@@ -382,10 +410,13 @@ class _CreateOrderViewState extends State<CreateOrderView> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: CustomButton(
                     btnColor: Theme.of(context).colorScheme.primary,
-                    btnOnTap: () {
+                    btnOnTap: () async {
                       if ( _form.currentState!.validate()){
-                      _createOrder(orderProvider);
+                        _createOrder(orderProvider);
+                        Navigator.of(context).pop();
+                        await Future.delayed(const Duration(seconds: 1));
                       }
+
                     },
                     btnChild: Text("Submit Order",
                         style: GoogleFonts.lato(
