@@ -3,19 +3,25 @@ class UserModel {
   String? email;
   String? displayName;
   String? photoUrl;
+  String? address;
+  String? contactNumber;
 
   UserModel(
       {required this.uid,
       required this.email,
       required this.displayName,
-      required this.photoUrl});
+      required this.photoUrl,
+      required this.address,
+      required this.contactNumber});
 
   Map<String, dynamic> toMap() {
     return {
       "uid": uid,
       "email": email,
       "displayName": displayName,
-      "photoUrl": photoUrl
+      "photoUrl": photoUrl,
+      "address" : address,
+      "contactNumber" : contactNumber
     };
   }
 
@@ -25,6 +31,8 @@ class UserModel {
       email: data["email"],
       displayName: data["displayName"],
       photoUrl: data["photoUrl"],
+      address: data["address"],
+      contactNumber: data["contactNumber"]
     );
   }
 }
