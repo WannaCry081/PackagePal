@@ -39,7 +39,7 @@ class _CustomFormFieldState extends State<CustomFormField> {
             filled: true,
             fillColor: Theme.of(context).colorScheme.primary.withAlpha(25),
             counterText: "",
-            labelStyle: GoogleFonts.poppins(fontSize: 14),
+            labelStyle: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[600]),
             labelText: widget.formLabelText,
             hintText: widget.formHintText,
             suffixIcon: GestureDetector(

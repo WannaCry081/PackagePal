@@ -47,7 +47,11 @@ dependencies:
   firebase_core: ^2.24.0
   google_sign_in: ^6.1.6
   shimmer: ^3.0.0
+  persistent_bottom_nav_bar_v2: any
   firebase_storage: ^11.5.4
+  cloud_firestore: ^4.13.5
+  intl: ^0.17.0
+
 
 dev_dependencies:
   flutter_test:
@@ -76,7 +80,12 @@ flutter:
     - assets/images/Onboarding_1.jpg
     - assets/images/Onboarding_2.jpg
     - assets/images/Onboarding_3.jpg
+    - assets/images/Profile_MeshGradient.png
+    - assets/images/CardIllustration.png
     - assets/svg/GoogleIcon.svg
+    - assets/svg/DeliveryGirl.svg
+    
+    - assets/images/Bubbles.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
