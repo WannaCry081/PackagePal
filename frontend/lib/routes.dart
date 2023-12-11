@@ -11,7 +11,7 @@ import "package:frontend/views/Register/index.dart";
 Map<String, Widget Function(BuildContext)> routes = {
   OnboardingView.id: (context) {
     return InitialRoute(
-      toRouteChild: LoadingView(child: const DashboardView()),
+      toRouteChild: LoadingView(child: DashboardView()),
       fromRouteChild: LoadingView(child: const OnboardingView()),
     );
   },
@@ -21,7 +21,7 @@ Map<String, Widget Function(BuildContext)> routes = {
   ErrorView.id: (context) => const ErrorView(),
   DashboardView.id: (context) {
     return InitialRoute(
-      toRouteChild: LoadingView(child: const DashboardView()),
+      toRouteChild: LoadingView(child: DashboardView()),
       fromRouteChild: LoadingView(child: const OnboardingView()),
     );
   }

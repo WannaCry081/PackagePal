@@ -29,12 +29,15 @@ class InitialRoute extends StatelessWidget {
           return LoadingView(child: const ErrorView());
         } else if (snapshot.hasData) {
           User user = snapshot.data!;
-          userProvider.setUserData(UserModel(
-            uid: user.uid,
-            email: user.email,
-            displayName: user.displayName,
-            photoUrl: user.photoURL,
-          ));
+          userProvider.setUserData(
+            UserModel(
+              uid: user.uid,
+              email: user.email,
+              displayName: user.displayName,
+              photoUrl: user.photoURL,
+              address: "",
+              contactNumber: ""
+            ));
 
           return toRouteChild;
         } else {

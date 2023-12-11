@@ -1,5 +1,6 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
+import "package:frontend/core/providers/order_provider.dart";
 import "package:frontend/core/providers/user_provider.dart";
 import "package:frontend/views/Dashboard/index.dart";
 import "package:frontend/views/Onboarding/index.dart";
@@ -21,6 +22,7 @@ Future<void> main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => SettingsProvider()),
     ChangeNotifierProvider(create: (context) => UserProvider()),
+    ChangeNotifierProvider(create: (context) => OrderProvider()),
   ], child: const MyApp()));
   return;
 }
