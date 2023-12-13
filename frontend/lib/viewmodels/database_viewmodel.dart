@@ -14,6 +14,11 @@ class DatabaseViewModel {
     return collection.snapshots();
   }
 
+  Future<DocumentSnapshot<Map<String, dynamic>>> fetchUserCredentials() async {
+    final collection = _firestore.collection(_userUid).doc("$_userUid+$_email");
+    return await collection.get();
+  } 
+
   Future<void> addUserCredential(Map<String, dynamic> data) async {
     final userInformationCollection = _firestore.collection(_userUid).doc("$_userUid+$_email");
     final orderCollection = _firestore.collection(_userUid).doc("$_userUid+Orders");
@@ -25,7 +30,7 @@ class DatabaseViewModel {
     return;
   }
 
-  Future<void> updateUserCredential(Map<String, dynamic> updates) async {
+  Future<void> updateUserCredential(Map<String, dynamic> data) async {
     final userInformationCollection = _firestore.collection(_userUid).doc("$_userUid+$_email");
 
     final snapshot = await userInformationCollection.get();
@@ -38,33 +43,12 @@ class DatabaseViewModel {
       return;
     }
 
-    updates.forEach((key, value) {
+    data.forEach((key, value) {
       userData[key] = value;
     });
 
     await userInformationCollection.set(userData);
   }
-
-  Future<void> updateDisplayName(String displayName) async {
-    final userInformationCollection = _firestore.collection(_userUid).doc("$_userUid+$_email");
-
-    final snapshot = await userInformationCollection.get();
-    if (!snapshot.exists) {
-      return;
-    }
-
-    final userData = snapshot.data() as Map<String, dynamic>;
-    if (userData.isEmpty) {
-      return;
-    }
-
-    userData['displayName'] = displayName;
-
-    await userInformationCollection.set(userData);
-  }
-
-
-
 
   // Orders
   Future<void> createOrder(List<dynamic> data) async {
