@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:frontend/core/constants/text_theme.dart";
+import "package:frontend/core/providers/user_provider.dart";
 import "package:frontend/core/utils/FormValidator.dart";
 import "package:frontend/models/user_model.dart";
 import "package:frontend/viewmodels/auth_viewmodel.dart";
@@ -8,6 +9,7 @@ import "package:frontend/viewmodels/database_viewmodel.dart";
 import "package:frontend/widgets/CustomButton.dart";
 import "package:frontend/widgets/CustomFormField.dart";
 import "package:google_fonts/google_fonts.dart";
+import "package:provider/provider.dart";
 
 class EditProfileView extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -40,7 +42,10 @@ class _EditProfileViewState extends State<EditProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    final db = DatabaseViewModel();
+
+    final userProvider = Provider.of<UserProvider>(context);
+    final data = userProvider.getUserData();
+    
 
     return Scaffold(
       body: SafeArea(
@@ -85,7 +90,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                   fontSize : 14,
                                   color: Colors.grey[600]
                                 ),
-                                hintText: widget.userData["displayName"],
+                                hintText: data?["displayName"],
                                 hintStyle: GoogleFonts.poppins(
                                   fontSize: 16,
                                   color: Colors.grey,
@@ -122,7 +127,16 @@ class _EditProfileViewState extends State<EditProfileView> {
                       btnColor: Theme.of(context).colorScheme.primary,
                       btnOnTap: () async {
                         if(_formKey.currentState!.validate()){
-                          await db.updateDisplayName(_displayName.text.trim());
+                          await userProvider.updateUserCredential(
+                            UserModel(
+                              uid: data?['uid'],
+                              email:  data?['email'],
+                              displayName: _displayName.text.trim(),
+                              photoUrl: data?['photoUrl'],
+                              address: data?['addres'],
+                              contactNumber: data?['contactNumber']
+                            ).toMap()
+                          );
 
                           await Future.delayed(const Duration(seconds: 1));
                           Navigator.of(context).pop();
