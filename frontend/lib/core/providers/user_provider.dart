@@ -16,29 +16,38 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setUserData(UserModel data) {
-    _user = data.toMap();
+  void setUserData(Map<String, dynamic> data) {
+    _user = data;
     return;
-  } 
+  }
 
-  // Future<Map<String, dynamic>?> fetchUserCredential() async {
-  //   DocumentSnapshot<Map<String, dynamic>> docSnapshot = await DatabaseViewModel().getUserCredential();
-  //   UserModel userData = UserModel.fromMap(docSnapshot.data() ?? {});
+  
+  Future<void> fetchUserCredential() async {
+    DocumentSnapshot<Map<String, dynamic>> docSnapshot = await DatabaseViewModel().fetchUserCredentials();
+    Map<String, dynamic> userDataMap = docSnapshot.data() ?? {};
+    setUserData(userDataMap);
 
-  //   setUserData(userData); 
-    
-  //   notifyListeners();
-  //   return _user;
-  // }
+    notifyListeners();
+    return;
+  }
 
   Future<void> addUserCredential(Map<String, dynamic> data) async {
     await DatabaseViewModel().addUserCredential(
       data
     );
 
-    // fetchUserCredential();
+    fetchUserCredential();
     return;
   }
+
+  Future<void> updateUserCredential(Map<String, dynamic> data) async {
+    await DatabaseViewModel().updateUserCredential(
+      data
+    );
+
+    await fetchUserCredential();
+  }
+
 
   Map<String, dynamic>? getUserData() {
     return _user;
