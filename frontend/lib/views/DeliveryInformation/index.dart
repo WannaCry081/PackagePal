@@ -41,7 +41,8 @@ class _EditDeliveryInfoState extends State<EditDeliveryInfo> {
 
   @override
   Widget build(BuildContext context) {
-    final db = DatabaseViewModel();
+    final userProvider = Provider.of<UserProvider>(context);
+    final data = userProvider.getUserData();
 
     return Scaffold(
       body: SafeArea(
@@ -100,48 +101,29 @@ class _EditDeliveryInfoState extends State<EditDeliveryInfo> {
                               const SizedBox(width: 15),
                         
                               Flexible(
-                                child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                                  stream: db.getUserCredential(),
-                                  builder: (context, snapshot) {
-
-                                    if (snapshot.connectionState == ConnectionState.waiting) {
-                                      return const Center(
-                                        child: SizedBox(
-                                          height: 50, width: 50,
-                                          child: CircularProgressIndicator()),
-                                      ); 
-                                    } else if (snapshot.hasError) {
-                                      return Center(child: titleText('Error loading data')); // Handle error
-                                    } else {
-                                      Map<String, dynamic> userData = snapshot.data!.data() ?? {};
-
-                                      return Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        titleText(
-                                            userData['displayName'] ?? '',
-                                            titleWeight: FontWeight.bold,
-                                            titleColor: Theme.of(context).colorScheme.primary,
-                                            titleSize: 20),
-                                        const SizedBox(height: 2),
-                                        bodyText(
-                                            userData['contactNumber'] ?? "Contact Number",
-                                            bodyWeight: FontWeight.w400,
-                                            bodyColor: Colors.grey[700],
-                                            bodySize: 14),
-                                        const SizedBox(height: 2),
-                                        bodyText(
-                                            userData['address'] ?? "Address",
-                                            bodyWeight: FontWeight.w400,
-                                            bodyColor: Colors.grey[700],
-                                            bodySize: 14),
-                                        const SizedBox(height: 2),
-                                      ],
-                                    );
-                                    }
-                                    
-                                  }
-                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    titleText(
+                                        data?['displayName'] ?? '',
+                                        titleWeight: FontWeight.bold,
+                                        titleColor: Theme.of(context).colorScheme.primary,
+                                        titleSize: 20),
+                                    const SizedBox(height: 2),
+                                    bodyText(
+                                        data?['contactNumber'] ?? "Contact Number",
+                                        bodyWeight: FontWeight.w400,
+                                        bodyColor: Colors.grey[700],
+                                        bodySize: 14),
+                                    const SizedBox(height: 2),
+                                    bodyText(
+                                        data?['address'] ?? "Address",
+                                        bodyWeight: FontWeight.w400,
+                                        bodyColor: Colors.grey[700],
+                                        bodySize: 14),
+                                    const SizedBox(height: 2),
+                                  ],
+                                )
                               ),
                             ],
                           ),
@@ -179,16 +161,16 @@ class _EditDeliveryInfoState extends State<EditDeliveryInfo> {
                           btnColor: Theme.of(context).colorScheme.primary,
                           btnOnTap: () async {
                             if(_formkey.currentState!.validate()){
-                              await db.updateUserCredential(
-                              UserModel(
-                                uid: AuthViewModel().getUserUID,
-                                  email: AuthViewModel().getUserEmail,
-                                  displayName: AuthViewModel().getUserDisplayName,
-                                  photoUrl: AuthViewModel().getUserPhotoUrl,
+                              await userProvider.updateUserCredential(
+                                UserModel(
+                                  uid: data?['uid'],
+                                  email:  data?['email'],
+                                  displayName: data?['displayName'],
+                                  photoUrl: data?['photoUrl'],
                                   address: _address.text.trim(),
                                   contactNumber: _contactNumber.text.trim()
-                                ).toMap());
-
+                                ).toMap()
+                              );
                                 await Future.delayed(const Duration(seconds: 1));
                                 Navigator.of(context).pop();
                             }
