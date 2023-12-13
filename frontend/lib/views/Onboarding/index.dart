@@ -1,9 +1,12 @@
 import "package:flutter/material.dart";
+import "package:frontend/core/providers/user_provider.dart";
+import "package:frontend/models/user_model.dart";
 import "package:frontend/views/Login/index.dart";
 import "package:frontend/widgets/CustomButton.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:flutter_svg/flutter_svg.dart";
 import "package:frontend/viewmodels/auth_viewmodel.dart";
+import "package:provider/provider.dart";
 
 class OnboardingView extends StatefulWidget {
   static String id = "/onboarding";
@@ -36,6 +39,25 @@ class _OnboardingViewState extends State<OnboardingView> {
           "Experience secure package retrieval with our app's\nadvanced security features, ensuring your deliveries'\nsafety and your peace of mind."
     },
   ];
+
+  Future<void> _signInPageGoogleAuth() async {
+
+    final userProvider = Provider.of<UserProvider>(context, listen : false);
+    List<String> data = await AuthViewModel().signInWithGoogle();
+
+    await userProvider.addUserCredential(
+      UserModel(
+        uid: data[0],
+        email: data[1],
+        displayName: data[2],
+        photoUrl: data[3],
+        address: "",
+        contactNumber: ""
+      ).toMap()
+    );
+    
+    return;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +144,9 @@ class _OnboardingViewState extends State<OnboardingView> {
                     child: CustomButton(
                         btnColor: Colors.grey.shade100,
                         btnShadow: true,
-                        btnOnTap: () => AuthViewModel().signInWithGoogle(),
+                        btnOnTap: (){
+                          _signInPageGoogleAuth();
+                        },
                         btnChild: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
