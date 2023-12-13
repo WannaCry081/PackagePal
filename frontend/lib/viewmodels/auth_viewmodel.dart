@@ -6,7 +6,7 @@ class AuthViewModel {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _signIn = GoogleSignIn();
 
-  Future<void> signInWithGoogle() async {
+  Future<List<String>> signInWithGoogle() async {
     final googleUser = await _signIn.signIn();
     final googleAuth = await googleUser?.authentication;
 
@@ -14,7 +14,12 @@ class AuthViewModel {
         idToken: googleAuth?.idToken, accessToken: googleAuth?.accessToken);
 
     await _auth.signInWithCredential(credential);
-    return;
+    return [
+      googleUser?.id ?? "",
+      googleUser?.email ?? "",
+      googleUser?.displayName ?? "",
+      googleUser?.photoUrl ?? "",
+    ];
   }
 
   Future<bool> signInWithEmail(String email, String password) async {
