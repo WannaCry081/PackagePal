@@ -1,6 +1,6 @@
 class OrderModel {
+  String? id;
   String? name;
-  // String? id;
   String? pin;
   String? weight;
   String? price;
@@ -11,6 +11,7 @@ class OrderModel {
 
   OrderModel(
     {
+      this.id,
       required this.name,
       required this.pin,
       required this.weight,
@@ -22,6 +23,7 @@ class OrderModel {
 
   Map<String, dynamic> toMap() {
     return {
+      "id" : id,
       "name" : name,
       "pin" : pin,
       "weight" : weight,
@@ -33,8 +35,14 @@ class OrderModel {
     };
   }
 
+  @override
+  String toString() {
+    return 'OrderModel{id: $id, name: $name, pin: $pin, weight: $weight, price: $price, status: $status, deliveryName: $deliveryName, deliveryContact: $deliveryContact, deliveryDate: $deliveryDate}';
+  }
+
   factory OrderModel.fromMap(Map<String, dynamic> data) {
     return OrderModel(
+      id: data["id"],
       name: data["name"],
       pin: data["pin"],
       weight: data["weight"],
@@ -42,7 +50,7 @@ class OrderModel {
       status: data["status"],
       deliveryName: data["deliveryName"],
       deliveryContact: data["deliveryContact"],
-      deliveryDate: data["deliverDate"]
+      deliveryDate: data["deliveryDate"]
     );
   }
 }
