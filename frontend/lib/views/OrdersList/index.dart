@@ -1,10 +1,13 @@
 import "package:firebase_database/firebase_database.dart";
 import "package:flutter/material.dart";
 import "package:frontend/core/constants/text_theme.dart";
+import "package:frontend/core/providers/user_provider.dart";
+import "package:frontend/models/order_model.dart";
 import "package:frontend/viewmodels/database_viewmodel.dart";
 import "package:frontend/views/OrderView/index.dart";
 import "package:frontend/widgets/OrderCard.dart";
 import "package:google_fonts/google_fonts.dart";
+import "package:provider/provider.dart";
 
 class OrdersListView extends StatefulWidget {
   const OrdersListView({super.key});
@@ -16,10 +19,15 @@ class OrdersListView extends StatefulWidget {
 class _OrdersListViewState extends State<OrdersListView> {
 
   final db = DatabaseViewModel();
+  final realtimeDb = RealtimeDatabaseViewModel();
+
   List<dynamic> orders= [];
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final data = userProvider.getUserData();
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: DefaultTabController(
@@ -57,15 +65,15 @@ class _OrdersListViewState extends State<OrdersListView> {
               ),
       
       
-              StreamBuilder<Object>(
-                stream: db.getOrders(),
+              StreamBuilder<List<OrderModel>>(
+                stream: realtimeDb.fetchOrders(data?['uid']).asStream(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
-                      child: Container(
+                    return const Center(
+                      child: SizedBox(
                         height: 50,
                         width: 50,
-                        child: const CircularProgressIndicator(),
+                        child: CircularProgressIndicator(),
                       ),
                     );
                   } else if (snapshot.hasError) {
@@ -75,17 +83,12 @@ class _OrdersListViewState extends State<OrdersListView> {
                   }
       
                   
-                  List<dynamic> orders = snapshot.data as List<dynamic>;
+                  List<OrderModel> orders = snapshot.data as List<OrderModel>;
                 
-                  List<Map<String, dynamic>> onProcessOrders = orders.cast<Map<String, dynamic>>().toList();
-                  List<Map<String, dynamic>> completedOrders = orders.cast<Map<String, dynamic>>().toList();
-      
-                  onProcessOrders = onProcessOrders
-                      .where((order) => order['status'] == 'On Process')
-                      .toList();
-                  completedOrders = completedOrders
-                      .where((order) => order['status'] == 'Completed')
-                      .toList();
+                  List<OrderModel> onProcessOrders =
+                      orders.where((order) => order.status == 'On Process').toList();
+                  List<OrderModel> completedOrders =
+                      orders.where((order) => order.status == 'Completed').toList();
                   
                   return Expanded(
                     child: TabBarView(
@@ -95,10 +98,11 @@ class _OrdersListViewState extends State<OrdersListView> {
                             itemCount: onProcessOrders.length,
                             itemBuilder: (context, index) {
                               final order = onProcessOrders[index];
-      
-                              final packageName = order['name'] as String;
-                              final status = order['status'] as String;
-                              final deliveryDate = order['deliveryDate'] as String;
+
+                              final orderId = order.id.toString();
+                              final packageName = order.name.toString();
+                              final status = order.status.toString();
+                              final deliveryDate = order.deliveryDate.toString();
       
                               return Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
@@ -108,7 +112,8 @@ class _OrdersListViewState extends State<OrdersListView> {
                                   deliveryDate: deliveryDate,
                                   orderCardOpenContents: () {
                                     Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) => OrderView(orderData: order, index: index)),
+                                      MaterialPageRoute(builder: (context) => 
+                                        OrderView(orderData: order, orderId: orderId)),
                                     );
                                   },
                                 ),
@@ -122,9 +127,10 @@ class _OrdersListViewState extends State<OrdersListView> {
                             itemBuilder: (context, index) {
                               final order = completedOrders[index];
       
-                              final packageName = order['name'] as String;
-                              final status = order['status'] as String;
-                              final deliveryDate = order['deliveryDate'] as String;
+                              final orderId = order.id.toString();
+                              final packageName = order.name.toString();
+                              final status = order.status.toString();
+                              final deliveryDate = order.deliveryDate.toString();
       
                               return Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
@@ -134,7 +140,7 @@ class _OrdersListViewState extends State<OrdersListView> {
                                   deliveryDate: deliveryDate,
                                   orderCardOpenContents: () {
                                     Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) => OrderView(orderData: order, index: index)),
+                                      MaterialPageRoute(builder: (context) => OrderView(orderData: order, orderId: orderId)),
                                     );
                                   },
                                 ),
