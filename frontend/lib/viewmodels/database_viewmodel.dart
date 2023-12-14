@@ -1,4 +1,6 @@
 import "package:cloud_firestore/cloud_firestore.dart";
+import "package:firebase_core/firebase_core.dart";
+import "package:firebase_database/firebase_database.dart";
 import "package:frontend/models/order_model.dart";
 import "package:frontend/viewmodels/auth_viewmodel.dart";
 
@@ -67,7 +69,6 @@ class DatabaseViewModel {
 
   return;
 }
-
 
   Stream<List<dynamic>> getOrders() {
   final orderCollection = _firestore.collection(_userUid).doc("$_userUid+Orders");
@@ -195,7 +196,6 @@ class DatabaseViewModel {
     });
   }
 
-
   Future<void> updateStatusToCompleted(int index) async {
     final orderCollection = _firestore.collection(_userUid).doc("$_userUid+Orders");
 
@@ -223,11 +223,104 @@ class DatabaseViewModel {
       "Orders": ordersList,
     });
   }
+}
 
 
+class RealtimeDatabaseViewModel {
+    final String _userUid = AuthViewModel().getUserUID;
+
+    DatabaseReference database = FirebaseDatabase.instanceFor(
+      app: Firebase.app(),
+      databaseURL:
+          "https://packagepal-io-default-rtdb.asia-southeast1.firebasedatabase.app/").ref();
+
+    Future<List<OrderModel>> fetchOrder(String id) async {
+      final orders = database.child(id).child("orders");
+
+      DatabaseEvent event = await orders.once();
+      DataSnapshot snapshot = event.snapshot;
+
+      List<OrderModel> orderList = [];
+
+      if (snapshot.value != null) {
+        Map<dynamic, dynamic> values = (snapshot.value as Map<dynamic, dynamic>);
+
+        values.forEach((key, value) {
+          OrderModel order = OrderModel(
+            name: value["name"],
+            pin: value["pin"],
+            weight: value["weight"],
+            price: value["price"],
+            status: value["status"],
+            deliveryName: value["deliveryName"],
+            deliveryContact: value["deliveryContact"],
+            deliveryDate: value["deliveryDate"],
+          );
+
+          orderList.add(order);
+        });
+      }
+
+      return orderList;
+    }
+
+  Future<List<OrderModel>> fetchOrders(String userId) async {
+    final ordersRef = database.child(userId).child('orders');
+      DatabaseEvent event = await ordersRef.once();
+
+      List<OrderModel> ordersList = [];
+
+      if (event.snapshot.exists) {
+        Map<dynamic, dynamic>? ordersData = event.snapshot.value as Map<dynamic, dynamic>?;
+        if (ordersData != null) {
+          ordersData.forEach((key, value) {
+            if (value is Map<dynamic, dynamic>) {
+              Map<String, dynamic> orderData = Map<String, dynamic>.from(value);
+              orderData['id'] = key;
+
+              OrderModel order = OrderModel.fromMap(orderData);
+              ordersList.add(order);
+            }
+          });
+        }
+      }
+
+      return ordersList;
+    }
 
 
+    Future<void> createOrder(OrderModel orderModel, String userId) async {
+      final orders = database.child(userId).child("orders");
+      DatabaseReference newOrderRef = orders.push();
 
+      await newOrderRef.set({
+        "name": orderModel.name,
+        "pin": orderModel.pin,
+        "weight": orderModel.weight,
+        "price": orderModel.price,
+        "status": orderModel.status,
+        "deliveryName": orderModel.deliveryName,
+        "deliveryContact": orderModel.deliveryContact,
+        "deliveryDate": orderModel.deliveryDate,
+      });
+
+    }
+
+    Future<void> updateOrder(OrderModel orderModel, String userId, String orderId) async {
+      final order = database.child(userId).child("orders").child(orderId);
+
+      await order.update({
+        "name": orderModel.name,
+        "pin": orderModel.pin,
+        "weight": orderModel.weight,
+        "price": orderModel.price,
+        "status": orderModel.status,
+        "deliveryName": orderModel.deliveryName,
+        "deliveryContact": orderModel.deliveryContact,
+        "deliveryDate": orderModel.deliveryDate,
+      });
+
+    }
 
 
 }
