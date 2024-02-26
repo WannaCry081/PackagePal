@@ -1,10 +1,16 @@
+import "package:cloud_firestore/cloud_firestore.dart";
+import "package:firebase_core/firebase_core.dart";
+import "package:firebase_database/firebase_database.dart";
+import "package:firebase_storage/firebase_storage.dart";
 import "package:flutter/material.dart";
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:frontend/core/constants/text_theme.dart";
 import "package:frontend/core/providers/order_provider.dart";
+import "package:frontend/core/providers/user_provider.dart";
 import "package:frontend/core/utils/FormValidator.dart";
 import "package:frontend/models/order_model.dart";
 import "package:frontend/viewmodels/database_viewmodel.dart";
+import "package:frontend/views/Home/index.dart";
 import "package:frontend/widgets/CustomButton.dart";
 import "package:frontend/widgets/CustomFormField.dart";
 import "package:google_fonts/google_fonts.dart";
@@ -17,12 +23,14 @@ class CreateOrderView extends StatefulWidget {
   final OrderModel? initialOrder; // Add this line
   final bool isEditMode;
   final int index;
+  final String orderId;
   
   const CreateOrderView({
     Key? key,
     this.initialOrder,
     this.isEditMode = false,
-    this.index = 0
+    this.index = 0,
+    this.orderId = "",
   });
 
   @override
@@ -30,7 +38,12 @@ class CreateOrderView extends StatefulWidget {
 }
 
 class _CreateOrderViewState extends State<CreateOrderView> {
-  final db = DatabaseViewModel();
+
+  final realtimeDb = RealtimeDatabaseViewModel();
+  var db = DatabaseViewModel();
+
+  late String boxId = "";
+
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
   late TextEditingController _packageName;
   late TextEditingController _pin;
@@ -41,9 +54,19 @@ class _CreateOrderViewState extends State<CreateOrderView> {
   late TextEditingController _status;
   late TextEditingController _deliveryDate;
 
+
   @override
   void initState() {
     super.initState();
+    fetchBoxId();
+    // _packageName = TextEditingController(text: "ESP32");
+    // _pin = TextEditingController(text: "12345678");
+    // _weight = TextEditingController(text: "12.5");
+    // _price = TextEditingController(text: "850");
+    // _deliveryName = TextEditingController(text: "Lepon");
+    // _deliveryContact = TextEditingController(text: "09332211078");
+    // _status = TextEditingController(text: "On Process");
+    // _deliveryDate = TextEditingController(text: "03-22-2023");
     _packageName = TextEditingController(text: widget.initialOrder?.name ?? "");
     _pin = TextEditingController(text: widget.initialOrder?.pin ?? "");
     _weight = TextEditingController(text: widget.initialOrder?.weight ?? "");
@@ -66,6 +89,14 @@ class _CreateOrderViewState extends State<CreateOrderView> {
     _status.dispose();
     _deliveryDate.dispose();
   }
+  
+  Future<void> fetchBoxId() async {
+    String id = await db.getBoxId();
+    setState(() {
+      boxId = id;
+    });
+  }
+
 
   void generateRandomPin() {
     const digits = '0123456789';
@@ -89,6 +120,8 @@ class _CreateOrderViewState extends State<CreateOrderView> {
     _status.text = "";
     _deliveryDate.text = "";
   }
+
+  
 
   Future<void> _createOrder(OrderProvider orderProvider) async {
     if (widget.isEditMode) {
@@ -120,15 +153,68 @@ class _CreateOrderViewState extends State<CreateOrderView> {
       ]); 
     }
     
-
     clearController();
   }
 
+  // Future<void> _createOrder(String id) async {
+  //   OrderModel orderModel = OrderModel(
+  //       name: _packageName.text.trim(),
+  //       pin: _pin.text.trim(),
+  //       weight: _weight.text.trim(),
+  //       price: _price.text.trim(),
+  //       status: _status.text.trim(),
+  //       deliveryName: _deliveryName.text.trim(),
+  //       deliveryContact: _deliveryContact.text.trim(),
+  //       deliveryDate: _deliveryDate.text.trim(),
+  //     );
+
+  //     await realtimeDb.createOrder(orderModel, id);
+  // }
+
+   Future<void> _createRealtimeOrder(String userId) async {
+    if (widget.isEditMode) {
+      OrderModel orderModel = OrderModel(
+          name: _packageName.text.trim(),
+          pin: _pin.text.trim(),
+          weight: _weight.text.trim(),
+          price: _price.text.trim(),
+          status: _status.text.trim(),
+          deliveryName: _deliveryName.text.trim(),
+          deliveryContact: _deliveryContact.text.trim(),
+          deliveryDate: _deliveryDate.text.trim(),
+        );
+
+      await realtimeDb.updateOrder(orderModel, boxId, widget.orderId);
+      Navigator.of(context).pop();
+    } 
+    else {
+      OrderModel orderModel = OrderModel(
+        name: _packageName.text.trim(),
+        pin: _pin.text.trim(),
+        weight: _weight.text.trim(),
+        price: _price.text.trim(),
+        status: _status.text.trim(),
+        deliveryName: _deliveryName.text.trim(),
+        deliveryContact: _deliveryContact.text.trim(),
+        deliveryDate: _deliveryDate.text.trim(),
+      );
+
+      await realtimeDb.createOrder(orderModel, boxId);
+      Navigator.of(context).pop();
+
+    }
+    clearController();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final orderProvider = Provider.of<OrderProvider>(context);
-    
+
+  final orderProvider = Provider.of<OrderProvider>(context);
+  final userProvider = Provider.of<UserProvider>(context);
+  final data = userProvider.getUserData();
+
+  print(boxId);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -411,10 +497,12 @@ class _CreateOrderViewState extends State<CreateOrderView> {
                   child: CustomButton(
                     btnColor: Theme.of(context).colorScheme.primary,
                     btnOnTap: () async {
-                      if ( _form.currentState!.validate()){
-                        _createOrder(orderProvider);
-                        Navigator.of(context).pop();
-                        await Future.delayed(const Duration(seconds: 1));
+                      try {
+                        _createRealtimeOrder(data?["uid"]);
+                        // _createOrder(orderProvider);
+                        print("data stored!");
+                      } catch (e) {
+                        print("error: $e");
                       }
 
                     },
