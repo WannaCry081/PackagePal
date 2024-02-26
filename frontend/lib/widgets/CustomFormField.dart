@@ -9,6 +9,7 @@ class CustomFormField extends StatefulWidget {
   final bool formObsecure;
   final int formMaxLength;
   final String? Function(String?)? formValidator;
+  final double? horizontalPadding;
 
   const CustomFormField(
       {Key? key,
@@ -17,6 +18,7 @@ class CustomFormField extends StatefulWidget {
       this.formHintText,
       this.formLabelText,
       this.formMaxLength = 100,
+      this.horizontalPadding,
       this.formObsecure = false})
       : super(key: key);
 
@@ -29,7 +31,7 @@ class _CustomFormFieldState extends State<CustomFormField> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: widget.horizontalPadding ?? 20),
       child: TextFormField(
         maxLength: widget.formMaxLength,
         controller: widget.formData,
