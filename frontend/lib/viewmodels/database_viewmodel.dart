@@ -10,12 +10,29 @@ class DatabaseViewModel {
   final String _userUid = AuthViewModel().getUserUID;
   final String _email = AuthViewModel().getUserEmail;
 
-  // User 
-  Stream<DocumentSnapshot<Map<String, dynamic>>> getUserCredential() {
-    final collection = _firestore.collection(_userUid).doc("$_userUid+$_email");
-    return collection.snapshots();
+  // Unique Box Code
+  Future<void> addUniqueCode(String boxId) async {
+    final codeCollection = _firestore.collection("box_id").doc("$_userUid");
+
+    await codeCollection.set({
+      "boxID" : boxId
+    });
+    return;
   }
 
+  Future<String> getBoxId() async {
+    final codeCollection = await _firestore.collection("box_id").doc(_userUid).get();
+      if (codeCollection.exists) {
+        return codeCollection.data()?['boxID'] ?? "";
+      } else {
+        return "";
+      }
+  }
+
+
+
+  // ================================================================================
+  // User 
   Future<DocumentSnapshot<Map<String, dynamic>>> fetchUserCredentials() async {
     final collection = _firestore.collection(_userUid).doc("$_userUid+$_email");
     return await collection.get();
@@ -264,34 +281,56 @@ class RealtimeDatabaseViewModel {
       return orderList;
     }
 
-  Future<List<OrderModel>> fetchOrders(String userId) async {
-    final ordersRef = database.child(userId).child('orders');
-      DatabaseEvent event = await ordersRef.once();
+  Future<List<OrderModel>> fetchOrders(String boxId) async {
+  final ordersRef = database.child(boxId).child('orders');
+  DatabaseEvent event = await ordersRef.once();
 
-      List<OrderModel> ordersList = [];
+  List<OrderModel> ordersList = [];
 
-      if (event.snapshot.exists) {
-        Map<dynamic, dynamic>? ordersData = event.snapshot.value as Map<dynamic, dynamic>?;
-        if (ordersData != null) {
-          ordersData.forEach((key, value) {
-            if (value is Map<dynamic, dynamic>) {
-              Map<String, dynamic> orderData = Map<String, dynamic>.from(value);
-              orderData['id'] = key;
+  if (event.snapshot.exists) {
+    Map<dynamic, dynamic>? ordersData = event.snapshot.value as Map<dynamic, dynamic>?;
+    if (ordersData != null) {
+      ordersData.forEach((key, value) {
+        if (value is Map<dynamic, dynamic>) {
+          Map<String, dynamic> orderData = Map<String, dynamic>.from(value);
+          orderData['id'] = key; // Ensure 'id' is included
 
-              OrderModel order = OrderModel.fromMap(orderData);
-              ordersList.add(order);
-            }
-          });
+          OrderModel order = OrderModel.fromMap(orderData); // Convert to OrderModel
+          ordersList.add(order);
         }
-      }
-
-      return ordersList;
+      });
     }
+  }
+
+  // Consider replacing this with proper logging
+  // print(ordersList);
+
+  return ordersList;
+}
+
+  Future<bool> getDoorStatus(String boxId) async {
+   DatabaseEvent databaseEvent = await database.once();
+    DataSnapshot dataSnapshot = databaseEvent.snapshot;
+    bool doorStatus = (dataSnapshot.value as bool) ?? false;
+    return doorStatus;
+  }
+
+  Future<void> updateDoorStatus(bool newStatus) async {
+    try {
+      await database.set(newStatus);
+    } catch (e) {
+      print('Error updating door status: $e');
+    }
+  }
 
 
-    Future<void> createOrder(OrderModel orderModel, String userId) async {
-      final orders = database.child(userId).child("orders");
+    Future<void> createOrder(OrderModel orderModel, String boxID) async {
+      final orders = database.child(boxID).child("orders");
       DatabaseReference newOrderRef = orders.push();
+
+      await database.child(boxID).set({
+        "isDoorOpen" : false
+      });
 
       await newOrderRef.set({
         "name": orderModel.name,
@@ -306,8 +345,8 @@ class RealtimeDatabaseViewModel {
 
     }
 
-    Future<void> updateOrder(OrderModel orderModel, String userId, String orderId) async {
-      final order = database.child(userId).child("orders").child(orderId);
+    Future<void> updateOrder(OrderModel orderModel, String boxId, String orderId) async {
+      final order = database.child(boxId).child("orders").child(orderId);
 
       await order.update({
         "name": orderModel.name,
