@@ -92,29 +92,29 @@ class _OrderViewState extends State<OrderView> {
                       )
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () async {
-                      // await db.deleteOrder(widget.index);
+                  // GestureDetector(
+                  //   onTap: () async {
+                  //     // await db.deleteOrder(widget.index);
 
-                      await Future.delayed(const Duration(seconds: 1));
-                      Navigator.of(context).pop();
+                  //     await Future.delayed(const Duration(seconds: 1));
+                  //     Navigator.of(context).pop();
 
-                    },
-                    child: Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.red[50],
-                          shape: BoxShape.circle
-                        ),
-                        child: Icon(
-                          FeatherIcons.trash,
-                          color: Colors.red[500],
-                          size: 20.0,
-                          weight: 5.0,
-                        )
-                    ),
-                  ),
+                  //   },
+                  //   child: Container(
+                  //       height: 40,
+                  //       width: 40,
+                  //       decoration: BoxDecoration(
+                  //         color: Colors.red[50],
+                  //         shape: BoxShape.circle
+                  //       ),
+                  //       child: Icon(
+                  //         FeatherIcons.trash,
+                  //         color: Colors.red[500],
+                  //         size: 20.0,
+                  //         weight: 5.0,
+                  //       )
+                  //   ),
+                  // ),
                 ],
               ),
             ),
