@@ -1,14 +1,14 @@
-import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:frontend/core/constants/text_theme.dart";
+import "package:frontend/core/providers/user_provider.dart";
 import "package:frontend/viewmodels/auth_viewmodel.dart";
-import "package:frontend/viewmodels/database_viewmodel.dart";
 import "package:frontend/views/ChangePassword/index.dart";
 import "package:frontend/views/DeliveryInformation/index.dart";
 import 'package:frontend/views/Profile/index.dart';
 import "package:frontend/widgets/CustomButton.dart";
 import "package:google_fonts/google_fonts.dart";
+import "package:provider/provider.dart";
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -18,12 +18,13 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-  
-
+ 
   bool isDark = false;
   @override
   Widget build(BuildContext context) {
-    final db = DatabaseViewModel();
+
+    final userProvider = Provider.of<UserProvider>(context);
+    final data = userProvider.getUserData();
 
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 242, 234, 227),
@@ -31,38 +32,23 @@ class _SettingsViewState extends State<SettingsView> {
         child: Padding(
           padding: const EdgeInsets.only(top: 20.0),
           child: Center(
-            child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-              stream: db.getUserCredential(),
-              builder: (context, snapshot) {
-                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: SizedBox(
-                      height: 50, width: 50,
-                      child: CircularProgressIndicator()),
-                  ); 
-                } else if (snapshot.hasError) {
-                  return Center(child: titleText('Error loading data')); // Handle error
-                } 
-                else {
-                  Map<String, dynamic> userData = snapshot.data!.data() ?? {};
-
-                   return Column(
+            child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 35.0),
                     CircleAvatar(
-                      backgroundImage: NetworkImage(userData['photoUrl'] ?? ""),
+                      backgroundImage: NetworkImage(data?['photoUrl'] ?? ""),
                       radius: 60,
                     ),
                     const SizedBox(height: 20.0),
                     titleText(
-                      userData['displayName'] ?? "",
+                      data?['displayName'] ?? "",
                       titleSize: 24.0,
                       titleWeight: FontWeight.bold
                     ),
                     const SizedBox(height: 5.0),
                     bodyText(
-                      userData['email'] ?? "",
+                      data?['email'] ?? "",
                       bodySize: 18.0,
                       bodyWeight: FontWeight.normal,
                       bodyColor: Colors.grey[800]
@@ -83,7 +69,7 @@ class _SettingsViewState extends State<SettingsView> {
                         child: Column(
                           children: [
                             settingsItem(
-                              FeatherIcons.user, "Change Display Name", EditProfileView(userData: userData,)),
+                              FeatherIcons.user, "Change Display Name", EditProfileView(userData: data ?? const {},)),
                             settingsItem(
                               FeatherIcons.truck, "Change Delivery Information", const EditDeliveryInfo()),
                             settingsItem(
@@ -104,7 +90,8 @@ class _SettingsViewState extends State<SettingsView> {
                                   ),
                                   const SizedBox(width: 15),
                                   titleText("Dark Mode",
-                                    titleSize: 16.0
+                                    titleSize: 16.0,
+                                    titleColor: Colors.black
                                   ),
                                   const Spacer(),
                                   Transform.scale(
@@ -114,15 +101,14 @@ class _SettingsViewState extends State<SettingsView> {
                                       onChanged: (value){
                                         setState(() {
                                           isDark = value;
+                                          // switch function here
                                         });
                                     }),
                                   ),
                                 ],
                               ),
                             ),
-                                        
                             const Spacer(),
-                                        
                             CustomButton(
                               btnColor: Theme.of(context).colorScheme.primary,
                               btnOnTap: () => AuthViewModel().signOutGoogle(),
@@ -137,11 +123,7 @@ class _SettingsViewState extends State<SettingsView> {
                       ),
                     )
                   ]
-                );
-
-                }
-              }
-            ),
+                )
           ),
         )
       ),
@@ -170,7 +152,8 @@ class _SettingsViewState extends State<SettingsView> {
           const SizedBox(width: 15),
           titleText(
             title,
-            titleSize: 16.0
+            titleSize: 16.0,
+            titleColor: Colors.black
           ),
           const Spacer(),
           Icon(FeatherIcons.chevronRight, color: Colors.grey[700]),

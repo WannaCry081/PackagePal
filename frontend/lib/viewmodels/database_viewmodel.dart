@@ -1,4 +1,6 @@
 import "package:cloud_firestore/cloud_firestore.dart";
+import "package:firebase_core/firebase_core.dart";
+import "package:firebase_database/firebase_database.dart";
 import "package:frontend/models/order_model.dart";
 import "package:frontend/viewmodels/auth_viewmodel.dart";
 
@@ -8,11 +10,33 @@ class DatabaseViewModel {
   final String _userUid = AuthViewModel().getUserUID;
   final String _email = AuthViewModel().getUserEmail;
 
-  // User 
-  Stream<DocumentSnapshot<Map<String, dynamic>>> getUserCredential() {
-    final collection = _firestore.collection(_userUid).doc("$_userUid+$_email");
-    return collection.snapshots();
+  // Unique Box Code
+  Future<void> addUniqueCode(String boxId) async {
+    final codeCollection = _firestore.collection("box_id").doc("$_userUid");
+
+    await codeCollection.set({
+      "boxID" : boxId
+    });
+    return;
   }
+
+  Future<String> getBoxId() async {
+    final codeCollection = await _firestore.collection("box_id").doc(_userUid).get();
+      if (codeCollection.exists) {
+        return codeCollection.data()?['boxID'] ?? "";
+      } else {
+        return "";
+      }
+  }
+
+
+
+  // ================================================================================
+  // User 
+  Future<DocumentSnapshot<Map<String, dynamic>>> fetchUserCredentials() async {
+    final collection = _firestore.collection(_userUid).doc("$_userUid+$_email");
+    return await collection.get();
+  } 
 
   Future<void> addUserCredential(Map<String, dynamic> data) async {
     final userInformationCollection = _firestore.collection(_userUid).doc("$_userUid+$_email");
@@ -25,7 +49,7 @@ class DatabaseViewModel {
     return;
   }
 
-  Future<void> updateUserCredential(Map<String, dynamic> updates) async {
+  Future<void> updateUserCredential(Map<String, dynamic> data) async {
     final userInformationCollection = _firestore.collection(_userUid).doc("$_userUid+$_email");
 
     final snapshot = await userInformationCollection.get();
@@ -38,33 +62,12 @@ class DatabaseViewModel {
       return;
     }
 
-    updates.forEach((key, value) {
+    data.forEach((key, value) {
       userData[key] = value;
     });
 
     await userInformationCollection.set(userData);
   }
-
-  Future<void> updateDisplayName(String displayName) async {
-    final userInformationCollection = _firestore.collection(_userUid).doc("$_userUid+$_email");
-
-    final snapshot = await userInformationCollection.get();
-    if (!snapshot.exists) {
-      return;
-    }
-
-    final userData = snapshot.data() as Map<String, dynamic>;
-    if (userData.isEmpty) {
-      return;
-    }
-
-    userData['displayName'] = displayName;
-
-    await userInformationCollection.set(userData);
-  }
-
-
-
 
   // Orders
   Future<void> createOrder(List<dynamic> data) async {
@@ -83,7 +86,6 @@ class DatabaseViewModel {
 
   return;
 }
-
 
   Stream<List<dynamic>> getOrders() {
   final orderCollection = _firestore.collection(_userUid).doc("$_userUid+Orders");
@@ -211,7 +213,6 @@ class DatabaseViewModel {
     });
   }
 
-
   Future<void> updateStatusToCompleted(int index) async {
     final orderCollection = _firestore.collection(_userUid).doc("$_userUid+Orders");
 
@@ -239,11 +240,126 @@ class DatabaseViewModel {
       "Orders": ordersList,
     });
   }
+}
 
 
+class RealtimeDatabaseViewModel {
+    final String _userUid = AuthViewModel().getUserUID;
+
+    DatabaseReference database = FirebaseDatabase.instanceFor(
+      app: Firebase.app(),
+      databaseURL:
+          "https://packagepal-io-default-rtdb.asia-southeast1.firebasedatabase.app/").ref();
+
+    Future<List<OrderModel>> fetchOrder(String id) async {
+      final orders = database.child(id).child("orders");
+
+      DatabaseEvent event = await orders.once();
+      DataSnapshot snapshot = event.snapshot;
+
+      List<OrderModel> orderList = [];
+
+      if (snapshot.value != null) {
+        Map<dynamic, dynamic> values = (snapshot.value as Map<dynamic, dynamic>);
+
+        values.forEach((key, value) {
+          OrderModel order = OrderModel(
+            name: value["name"],
+            pin: value["pin"],
+            weight: value["weight"],
+            price: value["price"],
+            status: value["status"],
+            deliveryName: value["deliveryName"],
+            deliveryContact: value["deliveryContact"],
+            deliveryDate: value["deliveryDate"],
+          );
+
+          orderList.add(order);
+        });
+      }
+
+      return orderList;
+    }
+
+  Future<List<OrderModel>> fetchOrders(String boxId) async {
+  final ordersRef = database.child(boxId).child('orders');
+  DatabaseEvent event = await ordersRef.once();
+
+  List<OrderModel> ordersList = [];
+
+  if (event.snapshot.exists) {
+    Map<dynamic, dynamic>? ordersData = event.snapshot.value as Map<dynamic, dynamic>?;
+    if (ordersData != null) {
+      ordersData.forEach((key, value) {
+        if (value is Map<dynamic, dynamic>) {
+          Map<String, dynamic> orderData = Map<String, dynamic>.from(value);
+          orderData['id'] = key; // Ensure 'id' is included
+
+          OrderModel order = OrderModel.fromMap(orderData); // Convert to OrderModel
+          ordersList.add(order);
+        }
+      });
+    }
+  }
+
+  // Consider replacing this with proper logging
+  // print(ordersList);
+
+  return ordersList;
+}
+
+  Future<bool> getDoorStatus(String boxId) async {
+   DatabaseEvent databaseEvent = await database.once();
+    DataSnapshot dataSnapshot = databaseEvent.snapshot;
+    bool doorStatus = (dataSnapshot.value as bool) ?? false;
+    return doorStatus;
+  }
+
+  Future<void> updateDoorStatus(bool newStatus) async {
+    try {
+      await database.set(newStatus);
+    } catch (e) {
+      print('Error updating door status: $e');
+    }
+  }
 
 
+    Future<void> createOrder(OrderModel orderModel, String boxID) async {
+      final orders = database.child(boxID).child("orders");
+      DatabaseReference newOrderRef = orders.push();
 
+      await database.child(boxID).set({
+        "isDoorOpen" : false
+      });
+
+      await newOrderRef.set({
+        "name": orderModel.name,
+        "pin": orderModel.pin,
+        "weight": orderModel.weight,
+        "price": orderModel.price,
+        "status": orderModel.status,
+        "deliveryName": orderModel.deliveryName,
+        "deliveryContact": orderModel.deliveryContact,
+        "deliveryDate": orderModel.deliveryDate,
+      });
+
+    }
+
+    Future<void> updateOrder(OrderModel orderModel, String boxId, String orderId) async {
+      final order = database.child(boxId).child("orders").child(orderId);
+
+      await order.update({
+        "name": orderModel.name,
+        "pin": orderModel.pin,
+        "weight": orderModel.weight,
+        "price": orderModel.price,
+        "status": orderModel.status,
+        "deliveryName": orderModel.deliveryName,
+        "deliveryContact": orderModel.deliveryContact,
+        "deliveryDate": orderModel.deliveryDate,
+      });
+
+    }
 
 
 }

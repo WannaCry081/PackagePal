@@ -8,13 +8,13 @@ import "package:frontend/viewmodels/database_viewmodel.dart";
 import "package:frontend/views/CreateOrder/index.dart";
 
 class OrderView extends StatefulWidget {
-  final Map<String, dynamic> orderData;
-  final int index;
+  final OrderModel orderData;
+  final String orderId;
 
   const OrderView({
     Key? key,
     required this.orderData,
-    required this.index,
+    required this.orderId,
   }) : super(key: key);
 
   @override
@@ -22,27 +22,27 @@ class OrderView extends StatefulWidget {
 }
 
 class _OrderViewState extends State<OrderView> {
-  late OrderModel orderModel;
+  late OrderModel orderData;
 
   @override
   void initState() {
     super.initState();
-    orderModel = OrderModel.fromMap(widget.orderData);
+    orderData = widget.orderData;
   }
 
   
   @override
   Widget build(BuildContext context) {
-    final db = DatabaseViewModel();
-
-    final name = widget.orderData['name'] as String;
-    final pin = widget.orderData['pin'] as String;
-    final weight = widget.orderData['weight'] as String;
-    final price = widget.orderData['price'] as String;
-    final status = widget.orderData['status'] as String;
-    final deliveryName = widget.orderData['deliveryName'] as String;
-    final deliveryContact = widget.orderData['deliveryContact'] as String;
-    final deliveryDate = widget.orderData['deliveryDate'] as String;
+    
+    final id = widget.orderData.id!.replaceAll('-', '');
+    final pin = widget.orderData.pin;
+    final name = widget.orderData.name;
+    final weight = widget.orderData.weight;
+    final price = widget.orderData.price;
+    final status = widget.orderData.status;
+    final deliveryName = widget.orderData.deliveryName;
+    final deliveryContact = widget.orderData.deliveryContact;
+    final deliveryDate = widget.orderData.deliveryDate;
 
     return Scaffold(
       body: SafeArea(
@@ -71,7 +71,7 @@ class _OrderViewState extends State<OrderView> {
                     onTap: () async {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) => CreateOrderView(
-                          index: widget.index, initialOrder: orderModel, isEditMode: true,))
+                          orderId: id, initialOrder: orderData, isEditMode: true,))
                       );
                       await Future.delayed(const Duration(seconds: 1));
                       Navigator.of(context).pop();
@@ -92,29 +92,29 @@ class _OrderViewState extends State<OrderView> {
                       )
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () async {
-                      await db.deleteOrder(widget.index);
+                  // GestureDetector(
+                  //   onTap: () async {
+                  //     // await db.deleteOrder(widget.index);
 
-                      await Future.delayed(const Duration(seconds: 1));
-                      Navigator.of(context).pop();
+                  //     await Future.delayed(const Duration(seconds: 1));
+                  //     Navigator.of(context).pop();
 
-                    },
-                    child: Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.red[50],
-                          shape: BoxShape.circle
-                        ),
-                        child: Icon(
-                          FeatherIcons.trash,
-                          color: Colors.red[500],
-                          size: 20.0,
-                          weight: 5.0,
-                        )
-                    ),
-                  ),
+                  //   },
+                  //   child: Container(
+                  //       height: 40,
+                  //       width: 40,
+                  //       decoration: BoxDecoration(
+                  //         color: Colors.red[50],
+                  //         shape: BoxShape.circle
+                  //       ),
+                  //       child: Icon(
+                  //         FeatherIcons.trash,
+                  //         color: Colors.red[500],
+                  //         size: 20.0,
+                  //         weight: 5.0,
+                  //       )
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -160,7 +160,7 @@ class _OrderViewState extends State<OrderView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             titleText(
-                              name,
+                              name!,
                               titleSize: 20.0,
                               titleWeight: FontWeight.w600,
                               titleAlignment: TextAlign.right,
@@ -168,8 +168,8 @@ class _OrderViewState extends State<OrderView> {
                             ),
                             Divider(color: Colors.grey[200]),
                             const SizedBox(height: 10.0),
-                            itemDetail(context, "Item ID","dk30c3nd", "Product PIN", pin),
-                            itemDetail(context, "Price","Php $price", "Weight", "$weight kg"),
+                            itemDetail(context, "Item ID", id, "Product PIN", pin, 12.0),
+                            itemDetail(context, "Price","Php $price", "Weight", "$weight kg", 16.0),
                           ],
                         ),
                       ),
@@ -220,7 +220,7 @@ class _OrderViewState extends State<OrderView> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           titleText(
-                            deliveryName,
+                            deliveryName!,
                             titleWeight: FontWeight.bold,
                             titleSize: 20.0,
                             titleColor: Colors.grey[800]
@@ -251,7 +251,7 @@ class _OrderViewState extends State<OrderView> {
                           ),
                           const SizedBox(width: 10),
                           bodyText(
-                            deliveryContact,
+                            deliveryContact!,
                             bodySize: 18.0,
                             bodyColor: Colors.grey[800],
                             bodyWeight: FontWeight.w600
@@ -297,7 +297,7 @@ class _OrderViewState extends State<OrderView> {
                           bodySize: 16.0
                         ),
                         bodyText(
-                          deliveryDate,
+                          deliveryDate!,
                           bodySize: 18.0,
                           bodyColor: Theme.of(context).colorScheme.secondary,
                           bodyWeight: FontWeight.w600
@@ -320,7 +320,7 @@ class _OrderViewState extends State<OrderView> {
                           child: Padding(
                             padding: const EdgeInsets.all(6.0),
                             child: bodyText(
-                              status,
+                              status!,
                               bodySize: 13,
                               bodyColor: Colors.white,
                               bodyWeight: FontWeight.bold
@@ -341,7 +341,7 @@ class _OrderViewState extends State<OrderView> {
     );
   }
 
-  Widget itemDetail (context, label1, data1, label2, data2) => Padding(
+  Widget itemDetail (context, label1, data1, label2, data2, fontSize1) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 10.0),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -371,7 +371,7 @@ class _OrderViewState extends State<OrderView> {
         
             titleText(
               data1,
-              titleSize: 16.0,
+              titleSize: fontSize1,
               titleWeight: FontWeight.bold
             )
           ],

@@ -1,3 +1,4 @@
+import "package:firebase_database/firebase_database.dart";
 import "package:frontend/views/Settings/index.dart";
 import "package:flutter/material.dart";
 import "package:frontend/views/CreateOrder/index.dart";
@@ -21,10 +22,9 @@ class DashboardView extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 70.0),
         child: FloatingActionButton(
           backgroundColor: Theme.of(context).colorScheme.secondary,
-          onPressed: () => {
+         onPressed: () => {
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const CreateOrderView())
-            )
+              MaterialPageRoute(builder: (context) => const CreateOrderView()))
           },
           child: const Icon(
             FeatherIcons.plus,

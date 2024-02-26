@@ -3,19 +3,54 @@ import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import "package:flutter_svg/flutter_svg.dart";
 import "package:frontend/core/constants/text_theme.dart";
 import "package:frontend/core/providers/user_provider.dart";
-import "package:frontend/viewmodels/auth_viewmodel.dart";
+import "package:frontend/core/utils/FormValidator.dart";
 import "package:frontend/viewmodels/database_viewmodel.dart";
-import "package:frontend/views/OrderView/index.dart";
-import "package:frontend/widgets/OrderCard.dart";
+import "package:frontend/widgets/CustomButton.dart";
+import "package:frontend/widgets/CustomDialogBox.dart";
+import "package:frontend/widgets/CustomFormField.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:provider/provider.dart";
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<HomeView> createState() => _HomeViewState();
+}
 
+class _HomeViewState extends State<HomeView> {
+
+  final GlobalKey<FormState> _form = GlobalKey<FormState>();
+  late TextEditingController _code;
+
+  
+  final db = DatabaseViewModel();
+  final realtimeDb = RealtimeDatabaseViewModel();
+  late String boxId = "";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchBoxId();
+    _code =  TextEditingController(text: "");
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    _code.dispose();
+  }
+
+   Future<void> fetchBoxId() async {
+    String id = await db.getBoxId();
+    setState(() {
+      boxId = id;
+    });
+  }
+
+  
+  @override
+  Widget build(BuildContext context) {
     final db = DatabaseViewModel();
     final userProvider = Provider.of<UserProvider>(context);
     final data = userProvider.getUserData();
@@ -33,26 +68,22 @@ class HomeView extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    bodyText(
-                      "",
-                    bodySize: 16.0,
-                    bodyColor: Colors.white),
                     const Spacer(),
-                    Container(
-                      margin: const EdgeInsets.only(right: 8),
-                      height: 40,
-                      width: 40,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle
-                      ),
-                      child: Icon(
-                        FeatherIcons.moon,
-                        color: Theme.of(context).colorScheme.secondary,
-                        size: 20.0,
-                        weight: 5.0,
-                      )
-                    ),
+                    // Container(
+                    //   margin: const EdgeInsets.only(right: 8),
+                    //   height: 40,
+                    //   width: 40,
+                    //   decoration: const BoxDecoration(
+                    //     color: Colors.white,
+                    //     shape: BoxShape.circle
+                    //   ),
+                    //   child: Icon(
+                    //     FeatherIcons.moon,
+                    //     color: Theme.of(context).colorScheme.secondary,
+                    //     size: 20.0,
+                    //     weight: 5.0,
+                    //   )
+                    // ),
 
                     CircleAvatar(
                       backgroundImage: NetworkImage(data?['photoUrl'] ?? ""),
@@ -95,117 +126,110 @@ class HomeView extends StatelessWidget {
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width,
-                      height: 165,
                       decoration: BoxDecoration(
                         color: const Color.fromARGB(255, 246, 236, 226),
                         borderRadius: BorderRadius.circular(10.0)
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             titleText(
-                              "Check Your Package",
+                              "Start adding orders now!",
                               titleSize: 24.0,
                               titleWeight: FontWeight.bold,
                             ),
-                            const SizedBox(height: 4),
-                            bodyText(
-                              "Enter the name of the package you want to view",
-                              bodySize: 12.0,
-                              bodyColor: Colors.grey[700],
-                              bodyAlignment: TextAlign.center,
+                            const SizedBox(height: 5),
+                             bodyText(
+                              "Receive packages effortlessly and hassle-free!",
                             ),
-                            const SizedBox(height: 10),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 10.0),
-                              child: TextField(
-                                style: GoogleFonts.poppins(fontSize : 14.0),
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25.0),
-                                    borderSide: BorderSide.none
+                           
+                            const SizedBox(height: 20),
+                            Form(
+                              key: _form,
+                              child: Column(
+                                children: [
+                                  CustomButton(
+                                    btnColor: Theme.of(context).colorScheme.primary,
+                                    btnOnTap: () async {
+                                      bool currentStatus = await realtimeDb.getDoorStatus(boxId);
+
+                                      await realtimeDb.updateDoorStatus(!currentStatus);
+        
+                                    },
+                                        btnChild: Text("Open Container",
+                                            style: GoogleFonts.lato(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                                color: Theme.of(context).colorScheme.background)),
                                   ),
-                                    hintStyle: GoogleFonts.poppins(
-                                      fontSize : 14.0,
-                                    ),
-                                    hintText: 'Enter the package name',
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    suffixIcon: Container(
-                                      margin: const EdgeInsets.all(6.0),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Theme.of(context).colorScheme.secondary
-                                      ),
-                                      child: const Icon(
-                                        FeatherIcons.search,
-                                        color: Colors.white,
-                                        size: 18.0
-                                      ),
-                                    )
-                                ),
+                                  const SizedBox(height: 10),
+                                  CustomButton(
+                                    btnColor: Theme.of(context).colorScheme.primary,
+                                    btnOnTap: () {
+                                      showDialog( context: context, 
+                                      builder: (context){
+                                        return CustomDialogBox(
+                                            dialogTitle: "Connect to my Container",
+                                            dialogSubtitle: "Enter the ID generated by the QR code.", 
+                                            dialogContent: CustomFormField(
+                                              formData: _code,
+                                              formLabelText: "Unique Code",
+                                              formValidator: (value) => FormValidator().validateInput(value, "Code", 2, 30),
+                                              horizontalPadding: 0,
+                                            ),
+                                            dialogOption1: "Cancel", 
+                                            dialogOption2: "Connect",
+                                            dialogOption1OnTap: () => Navigator.of(context).pop(),
+                                            dialogOption2OnTap: () async {
+                                             if(_form.currentState!.validate()){
+                                              db.addUniqueCode(_code.text.trim());
+                                              Navigator.of(context).pop();
+                                             } 
+                                            });
+                                          });
+                                      },
+                                    btnChild: Text("Connect to my Container",
+                                        style: GoogleFonts.lato(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: Theme.of(context).colorScheme.background)),
+                                  )
+                                ],
                               ),
                             )
                           ],
                         ),
                       )
                     ),
-                    const SizedBox(height: 10.0),
-                    StreamBuilder(
-                      stream: db.getOrdersOnToday(), 
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Center(
-                          child: Text('Error: ${snapshot.error}'),
-                        );
-                      } else if (!snapshot.hasData || snapshot.data == null) {
-                        return const Center(
-                          child: Text('No data available'),
-                        );
-                      }
-                      
-                       List<Map<String, dynamic>> orders = snapshot.data!.cast<Map<String, dynamic>>();
-
-                       return SizedBox(
-                        height: 80,
-                         child: ListView.builder(
-                          itemCount: 1,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index){
-                            final order = orders[index];
-                         
-                            final packageName = order['name'] as String;
-                            final status = order['status'] as String;
-                            final deliveryDate = order['deliveryDate'] as String;
-                         
-                            return Container(
-                              width: MediaQuery.of(context).size.width - 40,
-                              child: OrderCard(
-                                packageName: packageName, 
-                                status: status,
-                                deliveryDate: deliveryDate,
-                                orderCardOpenContents: () => {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => OrderView(
-                                        orderData: order, index: index)
-                                    )
-                                  )
-                                },
-                              ),
-                            );
-                          }),
-                       );
-                      }
-                    )
+                    // CustomButton(
+                    //   btnColor: Theme.of(context).colorScheme.primary,
+                    //   btnOnTap: () {
+                    //     showDialog( context: context, 
+                    //     builder: (context){
+                    //       return CustomDialogBox(
+                    //           dialogTitle: "Connect to my Container",
+                    //           dialogSubtitle: "Enter the ID generated by the QR code.", 
+                    //           dialogContent: CustomFormField(
+                    //             formData: _code,
+                    //             formLabelText: "Unique Code",
+                    //             formValidator: (value) => FormValidator().validateInput(value, "Code", 2, 30),
+                    //             horizontalPadding: 0,
+                    //           ),
+                    //           dialogOption1: "Cancel", 
+                    //           dialogOption2: "Connect",
+                    //           dialogOption1OnTap: () => Navigator.of(context).pop(),
+                    //           dialogOption2OnTap: (){},);
+                    //         });
+                    //     },
+                    //   btnChild: Text("Connect to my Container",
+                    //       style: GoogleFonts.lato(
+                    //           fontSize: 16,
+                    //           fontWeight: FontWeight.w600,
+                    //           color: Theme.of(context).colorScheme.background)),
+                    // )
                   ] 
                 )
               )

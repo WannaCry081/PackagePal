@@ -1,8 +1,9 @@
 import "package:flutter/material.dart";
 import "package:frontend/core/constants/text_theme.dart";
 import "package:frontend/viewmodels/auth_viewmodel.dart";
+import "package:frontend/viewmodels/storage_viewmodel.dart";
 
-class OrderCard extends StatelessWidget {
+class OrderCard extends StatefulWidget {
 
   final void Function() ? orderCardOpenContents;
   final String packageName;
@@ -18,9 +19,30 @@ class OrderCard extends StatelessWidget {
   }) : super(key : key);
 
   @override
+  State<OrderCard> createState() => _OrderCardState();
+}
+
+class _OrderCardState extends State<OrderCard> {
+
+  late String orderAvatar;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchOrderAvatar();
+  }
+  Future<void> fetchOrderAvatar() async {
+    String avatar = await StorageViewModel().getImage("Avatar.png");
+    setState(() {
+      orderAvatar = avatar;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
-     onTap: orderCardOpenContents,
+     onTap: widget.orderCardOpenContents,
       child: Container(
        height: 75,
        width: MediaQuery.of(context).size.width,
@@ -32,7 +54,7 @@ class OrderCard extends StatelessWidget {
        child: Row(
          children: [
             CircleAvatar(
-              backgroundImage: NetworkImage(AuthViewModel().getUserPhotoUrl),
+              backgroundImage: NetworkImage(orderAvatar),
               radius: 23,
             ),
            const SizedBox(width: 8.0),
@@ -41,14 +63,14 @@ class OrderCard extends StatelessWidget {
              crossAxisAlignment: CrossAxisAlignment.start,
              children: [
                titleText(
-                 packageName,
+                 widget.packageName,
                  titleSize: 16.0,
                  titleColor: Colors.grey[800],
                  titleWeight: FontWeight.bold,
                  titleOverflow: TextOverflow.ellipsis
                ),
                bodyText(
-                 deliveryDate,
+                 widget.deliveryDate,
                  bodySize: 13.0,
                  bodyColor: Colors.grey[800],
                  bodyOverflow: TextOverflow.ellipsis
@@ -65,7 +87,7 @@ class OrderCard extends StatelessWidget {
              child: Padding(
                padding: const EdgeInsets.all(6.0),
                child: bodyText(
-                 status,
+                 widget.status,
                  bodySize: 13,
                  bodyColor: Colors.white
                ),

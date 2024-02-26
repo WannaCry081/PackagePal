@@ -21,13 +21,16 @@ class AuthRouteHoc extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return LoadingView();
           } else if (snapshot.hasData) {
-            userProvider.setUserData(UserModel(
-                uid: FirebaseAuth.instance.currentUser!.uid,
-                email: FirebaseAuth.instance.currentUser!.email,
-                displayName: FirebaseAuth.instance.currentUser!.displayName,
-                photoUrl: FirebaseAuth.instance.currentUser!.photoURL,
-                address: "",
-                contactNumber: ""));
+            User user = FirebaseAuth.instance.currentUser!;
+            Map<String, dynamic> userData = {
+              'uid': user.uid,
+              'email': user.email,
+              'displayName': user.displayName,
+              'photoUrl': user.photoURL,
+              'address': "",
+              'contactNumber': "",
+            };
+            userProvider.setUserData(userData);
             return LoadingView(child: DashboardView());
           } else if (snapshot.hasError) {
             return const ErrorView();

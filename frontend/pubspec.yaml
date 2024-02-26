@@ -45,6 +45,7 @@ dependencies:
   flutter_feather_icons: ^2.0.0+1
   firebase_auth: ^4.15.0
   firebase_core: ^2.24.0
+  firebase_database: ^10.3.8
   google_sign_in: ^6.1.6
   shimmer: ^3.0.0
   persistent_bottom_nav_bar_v2: any
