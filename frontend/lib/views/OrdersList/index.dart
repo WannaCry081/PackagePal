@@ -22,11 +22,27 @@ class _OrdersListViewState extends State<OrdersListView> {
   final realtimeDb = RealtimeDatabaseViewModel();
 
   List<dynamic> orders= [];
+  late String boxId = "";
+
+  @override 
+  void initState(){
+    super.initState();
+    fetchBoxId();
+  }
+
+   Future<void> fetchBoxId() async {
+    String id = await db.getBoxId();
+    setState(() {
+      boxId = id;
+    });
+    print(id);
+  }
 
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     final data = userProvider.getUserData();
+
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -66,7 +82,7 @@ class _OrdersListViewState extends State<OrdersListView> {
       
       
               StreamBuilder<List<OrderModel>>(
-                stream: realtimeDb.fetchOrders(data?['uid']).asStream(),
+                stream: realtimeDb.fetchOrders(boxId).asStream(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
